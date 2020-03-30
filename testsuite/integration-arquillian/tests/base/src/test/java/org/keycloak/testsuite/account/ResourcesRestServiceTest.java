@@ -168,17 +168,17 @@ public class ResourcesRestServiceTest extends AbstractRestServiceTest {
 
     @Test
     public void testGetMyResourcesPagination() {
-        List<Resource> resources = getMyResources(0, 10, response -> assertNextPageLink(response, "/realms/test/account/resources", 10, 10));
+        List<Resource> resources = getMyResources(0, 10, response -> assertNextPageLink(response, "/realms/test/account/resources", 10, -1, 10));
 
         assertEquals(10, resources.size());
         assertMyResourcesResponse(resources);
 
-        resources = getMyResources(10, 10, response -> assertNextPageLink(response, "/realms/test/account/resources", 20, 10));
+        resources = getMyResources(10, 10, response -> assertNextPageLink(response, "/realms/test/account/resources", 20, 10, 10));
 
         assertEquals(10, resources.size());
 
         resources = getMyResources(20, 10, response -> {
-            assertNextPageLink(response, "/realms/test/account/resources", 20, 10, true);
+            assertNextPageLink(response, "/realms/test/account/resources", -1, 10, 10);
         });
 
         assertEquals(10, resources.size());
@@ -187,20 +187,36 @@ public class ResourcesRestServiceTest extends AbstractRestServiceTest {
 
         assertEquals(0, resources.size());
 
+        getMyResources(5, 10, response -> {
+            assertNextPageLink(response, "/realms/test/account/resources", 15, 5, 10);
+        });
+
+        getMyResources(10, 10, response -> {
+            assertNextPageLink(response, "/realms/test/account/resources", 20, 10, 10);
+        });
+
+        getMyResources(20, 10, response -> {
+            assertNextPageLink(response, "/realms/test/account/resources", -1, 10, 10);
+        });
+
+        getMyResources(20, 20, response -> {
+            assertNextPageLink(response, "/realms/test/account/resources", -1, 0, 20);
+        });
+
         getMyResources(30, 30, response -> {
-            assertNextPageLink(response, "/realms/test/account/resources", 0, 0, true, true);
+            assertNextPageLink(response, "/realms/test/account/resources", -1, -1, 30);
         });
 
         getMyResources(30, 31, response -> {
-            assertNextPageLink(response, "/realms/test/account/resources", 0, 0, true, true);
+            assertNextPageLink(response, "/realms/test/account/resources", -1, -1, 31);
         });
 
         getMyResources(0, 30, response -> {
-            assertNextPageLink(response, "/realms/test/account/resources", 0, 0, true, true);
+            assertNextPageLink(response, "/realms/test/account/resources", -1, -1, 30);
         });
 
         getMyResources(0, 31, response -> {
-            assertNextPageLink(response, "/realms/test/account/resources", 0, 0, true, true);
+            assertNextPageLink(response, "/realms/test/account/resources", -1, -1, 31);
         });
     }
 
@@ -225,16 +241,16 @@ public class ResourcesRestServiceTest extends AbstractRestServiceTest {
     public void testGetSharedWithMePagination() {
         for (String userName : userNames) {
             List<AbstractResourceService.ResourcePermission> resources = getSharedWithMe(userName, null, 0, 3,
-                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", 3, 3));
+                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", 3, -1, 3));
 
             assertSharedWithMeResponse(resources);
 
             getSharedWithMe(userName, null, 3, 3,
-                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", 6, 3));
+                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", 6, 3, 3));
             getSharedWithMe(userName, null, 6, 3,
-                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", 9, 3));
+                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", 9, 6, 3));
             getSharedWithMe(userName, null, 9, 3,
-                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", 9, 3, true));
+                    response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-me", -1, 6, 3));
         }
     }
 
@@ -252,20 +268,20 @@ public class ResourcesRestServiceTest extends AbstractRestServiceTest {
     public void testGetSharedWithOthersPagination() {
         List<AbstractResourceService.ResourcePermission> resources = doGet("/shared-with-others?first=0&max=5",
                 new TypeReference<List<AbstractResourceService.ResourcePermission>>() {
-                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", 5, 5));
+                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", 5, -1, 5));
 
         assertEquals(5, resources.size());
         assertSharedWithOthersResponse(resources);
 
         doGet("/shared-with-others?first=5&max=5",
                 new TypeReference<List<AbstractResourceService.ResourcePermission>>() {
-                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", 10, 5));
+                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", 10, 5, 5));
         doGet("/shared-with-others?first=20&max=5",
                 new TypeReference<List<AbstractResourceService.ResourcePermission>>() {
-                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", 25, 5));
+                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", 25, 20, 5));
         doGet("/shared-with-others?first=25&max=5",
                 new TypeReference<List<AbstractResourceService.ResourcePermission>>() {
-                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", 25, 5, true));
+                }, response -> assertNextPageLink(response, "/realms/test/account/resources/shared-with-others", -1, 20, 5));
     }
 
     @Test
@@ -739,36 +755,24 @@ public class ResourcesRestServiceTest extends AbstractRestServiceTest {
         }
     }
 
-    private void assertNextPageLink(SimpleHttp.Response response, String uri, int first, int max) {
-        assertNextPageLink(response, uri, first, max, false);
-    }
-
-    private void assertNextPageLink(SimpleHttp.Response response, String uri, int first, int max, boolean lastPage) {
-        assertNextPageLink(response, uri, first, max, lastPage, false);
-    }
-    
-    private void assertNextPageLink(SimpleHttp.Response response, String uri, int nextPage, int max, boolean lastPage, boolean singlePage) {
+    private void assertNextPageLink(SimpleHttp.Response response, String uri, int nextPage, int previousPage, int max) {
         try {
             List<String> links = response.getHeader("Link");
 
-            if (singlePage) {
+            if (nextPage == -1 && previousPage == -1) {
                 assertNull(links);
                 return;
             }
             
             assertNotNull(links);
             
-            if (max - nextPage == 0) {
-                assertEquals(1, links.size());
-            } else {
-                assertEquals(lastPage ? 1 : 2, links.size());
-            }
+            assertEquals(nextPage > -1 && previousPage > -1 ? 2 : 1, links.size());
             
             for (String link : links) {
                 if (link.contains("rel=\"next\"")) {
                     assertEquals("<" + authzClient.getConfiguration().getAuthServerUrl() + uri + "?first=" + nextPage + "&max=" + max + ">; rel=\"next\"", link);
                 } else {
-                    assertEquals("<" + authzClient.getConfiguration().getAuthServerUrl() + uri + "?first=" + (nextPage - max) + "&max=" + max + ">; rel=\"prev\"", link);
+                    assertEquals("<" + authzClient.getConfiguration().getAuthServerUrl() + uri + "?first=" + previousPage + "&max=" + max + ">; rel=\"prev\"", link);
                 }
             }
         } catch (IOException e) {
