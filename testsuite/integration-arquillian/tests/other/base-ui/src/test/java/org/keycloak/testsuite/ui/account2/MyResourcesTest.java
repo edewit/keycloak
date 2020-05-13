@@ -19,6 +19,7 @@ import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.authorization.PermissionTicketRepresentation;
 import org.keycloak.representations.idm.authorization.ResourceRepresentation;
+import org.keycloak.testsuite.ui.account2.page.AbstractLoggedInPage;
 import org.keycloak.testsuite.ui.account2.page.MyResourcesPage;
 import org.keycloak.testsuite.util.ClientBuilder;
 import org.keycloak.testsuite.util.UserBuilder;
@@ -41,7 +42,7 @@ import static org.keycloak.testsuite.util.WaitUtils.pause;
 import static org.keycloak.testsuite.util.WaitUtils.waitForModalFadeIn;
 import static org.keycloak.testsuite.util.WaitUtils.waitForModalFadeOut;
 
-public class MyResourcesTest extends AbstractAccountTest {
+public class MyResourcesTest extends BaseAccountPageTest {
     private static final String[] userNames = new String[]{"alice", "jdoe"};
 
     @Page
@@ -49,6 +50,11 @@ public class MyResourcesTest extends AbstractAccountTest {
 
     private RealmRepresentation testRealm;
     private CloseableHttpClient httpClient;
+
+    @Override
+    protected AbstractLoggedInPage getAccountPage() {
+        return myResourcesPage;
+    }
 
     @Override
     public void addTestRealms(List<RealmRepresentation> testRealms) {
@@ -91,8 +97,8 @@ public class MyResourcesTest extends AbstractAccountTest {
         }
     }
 
-    @Before
-    public void setup() throws Exception {
+    @Override
+    public void afterAbstractKeycloakTestRealmImport() {
         if (this.testRealm == null) return;
         ClientResource resourceServer = getResourceServer();
         AuthzClient authzClient = createAuthzClient(resourceServer.toRepresentation());
@@ -103,9 +109,14 @@ public class MyResourcesTest extends AbstractAccountTest {
 
             resource.setOwnerManagedAccess(true);
 
-            final byte[] content = new JWSInput(authzClient.obtainAccessToken("jdoe", PASSWORD).getToken()).getContent();
-            final AccessToken accessToken = JsonSerialization.readValue(content, AccessToken.class);
-            resource.setOwner(accessToken.getSubject());
+            try {
+                final byte[] content = new JWSInput(authzClient.obtainAccessToken("jdoe", PASSWORD).getToken()).getContent();
+                final AccessToken accessToken = JsonSerialization.readValue(content, AccessToken.class);
+                resource.setOwner(accessToken.getSubject());
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             resource.setName("Resource " + i);
             resource.setDisplayName("Display Name " + i);
@@ -131,12 +142,13 @@ public class MyResourcesTest extends AbstractAccountTest {
         }
     }
 
+    @Override
+    public void addTestUser() {
+        testUser = createUser("jdoe");
+    }
+
     @Test
     public void shouldShowMyResourcesAndUpdatePermissions() {
-        myResourcesPage.navigateTo();
-        loginPage.form().login(createUser("jdoe"));
-        myResourcesPage.assertCurrent();
-
         assertEquals(6, myResourcesPage.getResourcesListCount());
 
         final int row = 2;
@@ -155,10 +167,6 @@ public class MyResourcesTest extends AbstractAccountTest {
 
     @Test
     public void shouldShowMyResourcesAndShare() {
-        myResourcesPage.navigateTo();
-        loginPage.form().login(createUser("jdoe"));
-        myResourcesPage.assertCurrent();
-
         final int row = 3;
         myResourcesPage.clickExpandButton(row);
         pause(2000);
