@@ -37,6 +37,7 @@ import AccountService, {HttpResponse} from '../../account-service/account.servic
 import { Resource, Permission, Scope } from './MyResourcesPage';
 import { Msg } from '../../widgets/Msg';
 import {ContentAlert} from '../ContentAlert';
+import { PermissionSelect } from './PermissionSelect';
 
 interface ShareTheResourceProps {
     resource: Resource;
@@ -136,21 +137,6 @@ export class ShareTheResource extends React.Component<ShareTheResourceProps, Sha
         this.setState({usernames: newUsernames});
     }
 
-    private handleSelectPermission = (selectedPermission: Scope) => {
-        let newPermissionsSelected: Scope[] = this.state.permissionsSelected;
-        let newPermissionsUnSelected: Scope[] = this.state.permissionsUnSelected;
-
-        if (newPermissionsSelected.includes(selectedPermission)) {
-            newPermissionsSelected = newPermissionsSelected.filter(permission => permission !== selectedPermission);
-            newPermissionsUnSelected.push(selectedPermission);
-        } else {
-            newPermissionsUnSelected = newPermissionsUnSelected.filter(permission => permission !== selectedPermission);
-            newPermissionsSelected.push(selectedPermission);
-        }
-
-        this.setState({permissionsSelected: newPermissionsSelected, permissionsUnSelected: newPermissionsUnSelected});
-    }
-
     private isAddDisabled(): boolean {
         return this.state.usernameInput === '' || this.isAlreadyShared();
     }
@@ -233,30 +219,10 @@ export class ShareTheResource extends React.Component<ShareTheResourceProps, Sha
                                 label=""
                                 fieldId="permissions-selected"
                             >
-                                {this.state.permissionsSelected.length < 1 && <strong>Select permissions below:</strong>}
-                                <ChipGroup withToolbar>
-                                    <ChipGroupToolbarItem key='permissions-selected' categoryName='Grant Permissions '>
-                                    {this.state.permissionsSelected.map((currentChip: Scope) => (
-                                        <Chip key={currentChip.toString()} onClick={() => this.handleSelectPermission(currentChip)}>
-                                            {currentChip.toString()}
-                                        </Chip>
-                                    ))}
-                                    </ChipGroupToolbarItem>
-                                </ChipGroup>
-                            </FormGroup>
-                            <FormGroup
-                                label=""
-                                fieldId="permissions-not-selected"
-                            >
-                                <ChipGroup withToolbar>
-                                    <ChipGroupToolbarItem key='permissions-unselected' categoryName='Not Selected '>
-                                    {this.state.permissionsUnSelected.map((currentChip: Scope) => (
-                                        <Chip key={currentChip.toString()} onClick={() => this.handleSelectPermission(currentChip)}>
-                                            {currentChip.toString()}
-                                        </Chip>
-                                    ))}
-                                    </ChipGroupToolbarItem>
-                                </ChipGroup>
+                                <PermissionSelect
+                                    scopes={this.state.permissionsUnSelected}
+                                    onSelect={selection => this.setState({ permissionsSelected: selection })}
+                                />
                             </FormGroup>
                         </Form>
                     </StackItem>
