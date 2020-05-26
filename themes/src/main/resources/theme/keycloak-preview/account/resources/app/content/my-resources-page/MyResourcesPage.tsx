@@ -18,7 +18,7 @@ import * as React from 'react';
 
 import parse from '../../util/ParseLink';
 
-import { Button, Level, LevelItem, Stack, StackItem, Tab, Tabs, TextInput } from '@patternfly/react-core';
+import { Button, Level, LevelItem, Stack, StackItem, Tab, Tabs, TextInput, Pagination, PaginationVariant } from '@patternfly/react-core';
 
 import AccountService, {HttpResponse} from '../../account-service/account.service';
 
@@ -36,6 +36,7 @@ export interface MyResourcesPageState {
     nameFilter: string;
     myResources: PaginatedResources;
     sharedWithMe: PaginatedResources;
+    currentPage: number;
 }
 
 export interface Resource {
@@ -93,7 +94,8 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
             nameFilter: '',
             isModalOpen: false,
             myResources: {nextUrl: '', prevUrl: '', data: []},
-            sharedWithMe: {nextUrl: '', prevUrl: '', data: []}
+            sharedWithMe: {nextUrl: '', prevUrl: '', data: []},
+            currentPage: 1
         };
 
         this.fetchInitialResources();
@@ -231,7 +233,7 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
                     {this.makeTab(1, 'sharedwithMe', this.state.sharedWithMe, true)}
                 </Tabs>
 
-                <Level gutter='md'>
+                {/* <Level gutter='md'>
                     <LevelItem>
                         {this.hasPrevious() && <Button onClick={this.handlePreviousClick}>&lt;<Msg msgKey='previousPage'/></Button>}
                     </LevelItem>
@@ -243,7 +245,16 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
                     <LevelItem>
                         {this.hasNext() && <Button onClick={this.handleNextClick}><Msg msgKey='nextPage'/>&gt;</Button>}
                     </LevelItem>
-                </Level>
+                </Level> */}
+                <Pagination
+                    itemCount={this.state.myResources.data.length + (this.hasNext() ? 1 : 0) + ((this.state.currentPage - 1) * this.max)}
+                    widgetId="pagination-options"
+                    perPage={this.max}
+                    page={this.state.currentPage}
+                    variant={PaginationVariant.bottom}
+                    onSetPage={this.onSetPage}
+                    isCompact
+                />
             </ContentPage>
         );
     }
@@ -271,6 +282,15 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
             this.fetchResources(this.state.myResources.nextUrl);
         }
     }
+
+    private onSetPage = (_event: React.MouseEvent | React.KeyboardEvent | MouseEvent, pageNumber: number): void => {
+        if (pageNumber > this.state.currentPage) {
+            this.handleNextClick();
+        } else {
+            this.handlePreviousClick();
+        }
+        this.setState({currentPage: pageNumber});
+    };
 
     private handlePreviousClick = () => {
         if (this.isSharedWithMeTab()) {
