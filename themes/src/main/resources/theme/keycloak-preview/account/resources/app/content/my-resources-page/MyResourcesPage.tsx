@@ -18,7 +18,7 @@ import * as React from 'react';
 
 import parse from '../../util/ParseLink';
 
-import { Button, Level, LevelItem, Stack, StackItem, Tab, Tabs, TextInput, Pagination, PaginationVariant } from '@patternfly/react-core';
+import { Level, LevelItem, Stack, StackItem, Tab, Tabs, TextInput, Pagination, PaginationVariant } from '@patternfly/react-core';
 
 import AccountService, {HttpResponse} from '../../account-service/account.service';
 
@@ -37,6 +37,7 @@ export interface MyResourcesPageState {
     myResources: PaginatedResources;
     sharedWithMe: PaginatedResources;
     currentPage: number;
+    max: number;
 }
 
 export interface Resource {
@@ -85,7 +86,6 @@ const SHARED_WITH_ME_TAB = 1;
 
 export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyResourcesPageState> {
     private first = 0;
-    private max = 5;
 
     public constructor(props: MyResourcesPageProps) {
         super(props);
@@ -95,7 +95,8 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
             isModalOpen: false,
             myResources: {nextUrl: '', prevUrl: '', data: []},
             sharedWithMe: {nextUrl: '', prevUrl: '', data: []},
-            currentPage: 1
+            currentPage: 1,
+            max: 5
         };
 
         this.fetchInitialResources();
@@ -113,19 +114,11 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
         }
     }
 
-    private hasPrevious(): boolean {
-        if (this.isSharedWithMeTab()) {
-            return (this.state.sharedWithMe.prevUrl !== null) && (this.state.sharedWithMe.prevUrl !== '');
-        } else {
-            return (this.state.myResources.prevUrl !== null) && (this.state.myResources.prevUrl !== '');
-        }
-    }
-
     private fetchInitialResources(): void {
         if (this.isSharedWithMeTab()) {
             this.fetchResources("/resources/shared-with-me");
         } else {
-            this.fetchResources("/resources", {first: this.first, max: this.max});
+            this.fetchResources("/resources", {first: this.first, max: this.state.max});
         }
     }
 
@@ -133,7 +126,7 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
         if (this.isSharedWithMeTab()) {
             this.fetchResources("/resources/shared-with-me", params);
         } else {
-            this.fetchResources("/resources", {...params, first: this.first, max: this.max});
+            this.fetchResources("/resources", {...params, first: this.first, max: this.state.max});
         }
     }
 
@@ -233,26 +226,15 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
                     {this.makeTab(1, 'sharedwithMe', this.state.sharedWithMe, true)}
                 </Tabs>
 
-                {/* <Level gutter='md'>
-                    <LevelItem>
-                        {this.hasPrevious() && <Button onClick={this.handlePreviousClick}>&lt;<Msg msgKey='previousPage'/></Button>}
-                    </LevelItem>
-
-                    <LevelItem>
-                        {this.hasPrevious() && <Button onClick={this.handleFirstPageClick}><Msg msgKey='firstPage'/></Button>}
-                    </LevelItem>
-
-                    <LevelItem>
-                        {this.hasNext() && <Button onClick={this.handleNextClick}><Msg msgKey='nextPage'/>&gt;</Button>}
-                    </LevelItem>
-                </Level> */}
                 <Pagination
-                    itemCount={this.state.myResources.data.length + (this.hasNext() ? 1 : 0) + ((this.state.currentPage - 1) * this.max)}
+                    itemCount={this.state.myResources.data.length + (this.hasNext() ? this.state.max : 0) + ((this.state.currentPage - 1) * this.state.max)}
                     widgetId="pagination-options"
-                    perPage={this.max}
+                    perPage={this.state.max}
                     page={this.state.currentPage}
                     variant={PaginationVariant.bottom}
                     onSetPage={this.onSetPage}
+                    onPerPageSelect={this.onPerPageSelect}
+                    perPageOptions={[ { title: '5', value: 5 }, { title: '10', value: 10 }, { title: '20', value: 20 } ]}
                     isCompact
                 />
             </ContentPage>
@@ -262,17 +244,6 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
     private handleFilterRequest = (value: string) => {
         this.setState({nameFilter: value});
         this.fetchFilteredResources({name: value});
-    }
-
-    private clearNextPrev(): void {
-        const newMyResources: PaginatedResources = this.state.myResources;
-        newMyResources.nextUrl = '';
-        newMyResources.prevUrl = '';
-        this.setState({myResources: newMyResources});
-    }
-
-    private handleFirstPageClick = () => {
-        this.fetchInitialResources();
     }
 
     private handleNextClick = () => {
@@ -290,7 +261,11 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
             this.handlePreviousClick();
         }
         this.setState({currentPage: pageNumber});
-    };
+    }
+
+    private onPerPageSelect = (_event: React.MouseEvent | React.KeyboardEvent | MouseEvent, perPage: number): void => {
+        this.setState({max: perPage}, () => this.fetchInitialResources());
+    }
 
     private handlePreviousClick = () => {
         if (this.isSharedWithMeTab()) {
@@ -300,7 +275,7 @@ export class MyResourcesPage extends React.Component<MyResourcesPageProps, MyRes
         }
     }
 
-    private handleTabClick = (event: React.MouseEvent<HTMLInputElement>, tabIndex: number) => {
+    private handleTabClick = (_event: React.MouseEvent<HTMLInputElement>, tabIndex: number) => {
         if (this.state.activeTabKey === tabIndex) return;
 
         this.setState({
