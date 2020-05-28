@@ -193,7 +193,7 @@ export class ShareTheResource extends React.Component<ShareTheResourceProps, Sha
                                                 isValid={!this.isAlreadyShared()}
                                                 id="username"
                                                 aria-describedby="username-helper"
-                                                placeholder="username or email"
+                                                placeholder="Username"
                                                 onChange={this.handleUsernameChange}
                                                 onKeyPress={this.handleEnterKeyInAddField}
                                             />
