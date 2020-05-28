@@ -28,10 +28,14 @@ import {
     LevelItem,
     Stack,
     StackItem,
-    Button
+    Button,
+    EmptyState,
+    EmptyStateVariant,
+    Title,
+    EmptyStateIcon
   } from '@patternfly/react-core';
 
-import { Remove2Icon } from '@patternfly/react-icons';
+import { Remove2Icon, RepositoryIcon, EmberIcon } from '@patternfly/react-icons';
 
 import AccountService, {HttpResponse} from '../../account-service/account.service';
 import {PermissionRequest} from "./PermissionRequest";
@@ -83,6 +87,16 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
     }
 
     public render(): React.ReactNode {
+        if (this.props.resources.data.length === 0) {
+            return (
+                <EmptyState variant={EmptyStateVariant.full}>
+                    <EmptyStateIcon icon={RepositoryIcon}/>
+                    <Title headingLevel="h5" size="lg">
+                        <Msg msgKey="notHaveAnyResource"/>
+                    </Title>
+                </EmptyState>
+            );
+        }
         return (
             <DataList aria-label={Msg.localize('resources')} id="resourcesList">
                 <DataListItem key='resource-header' aria-labelledby='resource-header'>
@@ -110,9 +124,7 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                         />
                     </DataListItemRow>
                 </DataListItem>
-                {(this.props.resources.data.length === 0) && <Msg msgKey="notHaveAnyResource"/>}
-                {this.props.resources.data.map((resource: Resource, row: number) => {
-                    return (
+                {this.props.resources.data.map((resource: Resource, row: number) => (
                     <DataListItem key={'resource-' + row} aria-labelledby={resource.name} isExpanded={this.state.isRowOpen[row]}>
                         <DataListItemRow>
                             <DataListToggle
@@ -182,7 +194,7 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                             </Stack>
                         </DataListContent>
                     </DataListItem>
-                )})}
+                ))}
             </DataList>
         );
     }

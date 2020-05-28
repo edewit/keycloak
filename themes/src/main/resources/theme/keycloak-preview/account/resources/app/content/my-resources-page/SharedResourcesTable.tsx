@@ -24,13 +24,18 @@ import {
     DataListItemCells,
     ChipGroup,
     ChipGroupToolbarItem,
-    Chip
+    Chip,
+    EmptyState,
+    EmptyStateIcon,
+    EmptyStateVariant,
+    Title
   } from '@patternfly/react-core';
 
 
 import {PaginatedResources, Resource} from "./MyResourcesPage";
 import { Msg } from '../../widgets/Msg';
 import { AbstractResourcesTable, ResourcesTableState } from './AbstractResourceTable';
+import { RepositoryIcon } from '@patternfly/react-icons';
 
 export interface ResourcesTableProps {
     resources: PaginatedResources;
@@ -47,6 +52,16 @@ export class SharedResourcesTable extends AbstractResourcesTable<ResourcesTableS
     }
 
     public render(): React.ReactNode {
+        if (this.props.resources.data.length === 0) {
+            return (
+                <EmptyState variant={EmptyStateVariant.full}>
+                    <EmptyStateIcon icon={RepositoryIcon}/>
+                    <Title headingLevel="h5" size="lg">
+                        <Msg msgKey="noResourcesSharedWithYou"/>
+                    </Title>
+                </EmptyState>
+            )
+        }
         return (
             <DataList aria-label={Msg.localize('resources')}>
                 <DataListItem key='resource-header' aria-labelledby='resource-header'>
@@ -65,7 +80,6 @@ export class SharedResourcesTable extends AbstractResourcesTable<ResourcesTableS
                         />
                     </DataListItemRow>
                 </DataListItem>
-                {(this.props.resources.data.length === 0) && <Msg msgKey="noResourcesSharedWithYou"/>}
                 {this.props.resources.data.map((resource: Resource, row: number) => (
                     <DataListItem key={'resource-' + row} aria-labelledby={resource.name}>
                         <DataListItemRow>
