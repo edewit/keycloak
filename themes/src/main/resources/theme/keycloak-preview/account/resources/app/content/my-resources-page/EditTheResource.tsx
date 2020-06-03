@@ -23,24 +23,20 @@ import {
     DataListItemRow,
     DataListItemCells,
     DataListCell,
-    DataListItem,
-    ChipGroup,
-    ChipGroupToolbarItem,
-    Chip
+    DataListItem
 } from '@patternfly/react-core';
-
-import { EditAltIcon } from '@patternfly/react-icons';
 
 import { Resource, Permission, Scope } from './MyResourcesPage';
 import { Msg } from '../../widgets/Msg';
 import AccountService, {HttpResponse} from '../../account-service/account.service';
 import { ContentAlert } from '../ContentAlert';
+import { PermissionSelect } from './PermissionSelect';
 
 interface EditTheResourceProps {
     resource: Resource;
     permissions: Permission[];
-    onClose: (resource: Resource, row: number) => void;
-    row: number;
+    onClose: () => void;
+    children: (toggle: () => void) => void;
 }
 
 interface EditTheResourceState {
@@ -59,13 +55,13 @@ export class EditTheResource extends React.Component<EditTheResourceProps, EditT
     }
 
     private clearState(): void {
-        this.setState({
-        });
+        this.setState({});
     }
 
     private handleToggleDialog = () => {
         if (this.state.isOpen) {
             this.setState({ isOpen: false });
+            this.props.onClose();
         } else {
             this.clearState();
             this.setState({ isOpen: true });
@@ -76,15 +72,13 @@ export class EditTheResource extends React.Component<EditTheResourceProps, EditT
         permission.scopes.splice(permission.scopes.indexOf(scope), 1);
         await AccountService.doPut(`/resources/${this.props.resource._id}/permissions`, [permission]);
         ContentAlert.success(Msg.localize('shareSuccess'));
-        this.props.onClose(this.props.resource, this.props.row);
+        this.props.onClose();
     }
 
     public render(): React.ReactNode {
         return (
             <React.Fragment>
-                <Button variant="link" onClick={this.handleToggleDialog}>
-                    <EditAltIcon /> Edit
-                </Button>
+                {this.props.children(this.handleToggleDialog)}
 
                 <Modal
                     title={'Edit the resource - ' + this.props.resource.name}
@@ -120,17 +114,10 @@ export class EditTheResource extends React.Component<EditTheResourceProps, EditT
                                                     {p.username}
                                                 </DataListCell>,
                                                 <DataListCell key={'permission-' + row} width={5}>
-                                                    <ChipGroup withToolbar>
-                                                        <ChipGroupToolbarItem key='permissions' categoryName={Msg.localize('permissions')}>
-                                                            {
-                                                                p.scopes.length > 0 && p.scopes.map(scope => (
-                                                                    <Chip key={scope.toString()} onClick={() => this.deletePermission(p, scope)}>
-                                                                        {scope.displayName || scope}
-                                                                    </Chip>
-                                                                ))
-                                                            }
-                                                        </ChipGroupToolbarItem>
-                                                    </ChipGroup>
+                                                    <PermissionSelect
+                                                        scopes={p.scopes}
+                                                        onSelect={selection => console.log(selection)}
+                                                    />
                                                 </DataListCell>
                                             ]}
                                         />

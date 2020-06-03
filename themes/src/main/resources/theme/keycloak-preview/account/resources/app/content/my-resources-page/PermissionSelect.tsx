@@ -6,6 +6,7 @@ import { Scope } from './MyResourcesPage';
 interface PermissionSelectState {
   selected: ScopeValue[];
   isExpanded: boolean;
+  scopes: JSX.Element[];
 }
 
 interface PermissionSelectProps {
@@ -34,7 +35,10 @@ export class PermissionSelect extends React.Component<PermissionSelectProps, Per
 
     this.state = {
       isExpanded: false,
-      selected: []
+      selected: [],
+      scopes: this.props.scopes.map((option, index) => (
+        <SelectOption key={index} value={new ScopeValue(option)} />
+      ))
     };
   }
 
@@ -87,9 +91,7 @@ export class PermissionSelect extends React.Component<PermissionSelectProps, Per
           ariaLabelledBy={titleId}
           placeholderText="Select the permissions"
         >
-          {this.props.scopes.map((option, index) => (
-            <SelectOption key={index} value={new ScopeValue(option)} />
-          ))}
+          {this.state.scopes}
         </Select>
       </div>
     );

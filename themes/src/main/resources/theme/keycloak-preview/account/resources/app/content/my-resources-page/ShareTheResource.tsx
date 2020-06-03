@@ -31,9 +31,7 @@ import {
     TextInput
 } from '@patternfly/react-core';
 
-import { ShareAltIcon } from '@patternfly/react-icons';
-
-import AccountService, {HttpResponse} from '../../account-service/account.service';
+import AccountService from '../../account-service/account.service';
 import { Resource, Permission, Scope } from './MyResourcesPage';
 import { Msg } from '../../widgets/Msg';
 import {ContentAlert} from '../ContentAlert';
@@ -43,8 +41,8 @@ interface ShareTheResourceProps {
     resource: Resource;
     permissions: Permission[];
     sharedWithUsersMsg: React.ReactNode;
-    onClose: (resource: Resource, row: number) => void;
-    row: number;
+    onClose: () => void;
+    children: (toggle: () => void) => void;
 }
 
 interface ShareTheResourceState {
@@ -59,7 +57,7 @@ interface ShareTheResourceState {
  * @author Stan Silvert ssilvert@redhat.com (C) 2019 Red Hat Inc.
  */
 export class ShareTheResource extends React.Component<ShareTheResourceProps, ShareTheResourceState> {
-    protected static defaultProps = {permissions: [], row: 0};
+    protected static defaultProps = {permissions: []};
 
     public constructor(props: ShareTheResourceProps) {
         super(props);
@@ -101,7 +99,7 @@ export class ShareTheResource extends React.Component<ShareTheResourceProps, Sha
         AccountService.doPut(`/resources/${rscId}/permissions`, permissions)
             .then(() => {
                 ContentAlert.success('shareSuccess');
-                this.props.onClose(this.props.resource, this.props.row);
+                this.props.onClose();
             })
     };
 
@@ -154,12 +152,9 @@ export class ShareTheResource extends React.Component<ShareTheResourceProps, Sha
     }
 
     public render(): React.ReactNode {
-
         return (
             <React.Fragment>
-                <Button variant="link" onClick={this.handleToggleDialog}>
-                    <ShareAltIcon/> Share
-                </Button>
+                {this.props.children(this.handleToggleDialog)}
 
                 <Modal
                 title={'Share the resource - ' + this.props.resource.name}
