@@ -11,6 +11,8 @@ interface PermissionSelectState {
 
 interface PermissionSelectProps {
   scopes: Scope[];
+  selected?: Scope[];
+  direction?: 'up' | 'down';
   onSelect: (selected: Scope[]) => void;
 }
 
@@ -33,11 +35,16 @@ export class PermissionSelect extends React.Component<PermissionSelectProps, Per
   constructor(props: PermissionSelectProps) {
     super(props);
 
+    let values: ScopeValue[] = [];
+    if (this.props.selected) {
+      values = this.props.selected!.map(s => new ScopeValue(s))
+    }
+
     this.state = {
       isExpanded: false,
-      selected: [],
+      selected: values,
       scopes: this.props.scopes.map((option, index) => (
-        <SelectOption key={index} value={new ScopeValue(option)} />
+        <SelectOption key={index} value={values.find(s => s.compareTo(option)) || new ScopeValue(option)} />
       ))
     };
   }
@@ -69,6 +76,7 @@ export class PermissionSelect extends React.Component<PermissionSelectProps, Per
       selected: [],
       isExpanded: false
     });
+    this.props.onSelect([]);
   };
 
   render() {
@@ -81,6 +89,7 @@ export class PermissionSelect extends React.Component<PermissionSelectProps, Per
           Select the permissions
         </span>
         <Select
+          direction={this.props.direction || 'down'}
           variant={SelectVariant.typeaheadMulti}
           ariaLabelTypeAhead="Select the permissions"
           onToggle={this.onToggle}

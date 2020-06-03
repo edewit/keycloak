@@ -106,6 +106,7 @@ export class ShareTheResource extends React.Component<ShareTheResourceProps, Sha
     private handleToggleDialog = () => {
        if (this.state.isOpen) {
            this.setState({isOpen: false});
+           this.props.onClose();
        } else {
            this.clearState();
            this.setState({isOpen: true});
@@ -217,6 +218,7 @@ export class ShareTheResource extends React.Component<ShareTheResourceProps, Sha
                                 <PermissionSelect
                                     scopes={this.state.permissionsUnSelected}
                                     onSelect={selection => this.setState({ permissionsSelected: selection })}
+                                    direction="up"
                                 />
                             </FormGroup>
                         </Form>

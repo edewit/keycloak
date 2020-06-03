@@ -19,16 +19,16 @@ import * as React from 'react';
 import {
     Button,
     Modal,
-    DataList,
-    DataListItemRow,
-    DataListItemCells,
-    DataListCell,
-    DataListItem
+    Form,
+    FormGroup,
+    TextInput,
+    InputGroup
 } from '@patternfly/react-core';
+import { OkIcon } from '@patternfly/react-icons';
 
 import { Resource, Permission, Scope } from './MyResourcesPage';
 import { Msg } from '../../widgets/Msg';
-import AccountService, {HttpResponse} from '../../account-service/account.service';
+import AccountService from '../../account-service/account.service';
 import { ContentAlert } from '../ContentAlert';
 import { PermissionSelect } from './PermissionSelect';
 
@@ -40,16 +40,18 @@ interface EditTheResourceProps {
 }
 
 interface EditTheResourceState {
+    changed: boolean[];
     isOpen: boolean;
 }
 
 export class EditTheResource extends React.Component<EditTheResourceProps, EditTheResourceState> {
-    protected static defaultProps = { permissions: [], row: 0 };
+    protected static defaultProps = { permissions: [] };
 
     public constructor(props: EditTheResourceProps) {
         super(props);
 
         this.state = {
+            changed: [],
             isOpen: false,
         };
     }
@@ -68,11 +70,15 @@ export class EditTheResource extends React.Component<EditTheResourceProps, EditT
         }
     };
 
-    async deletePermission(permission: Permission, scope: Scope): Promise<void> {
-        permission.scopes.splice(permission.scopes.indexOf(scope), 1);
+    private updateChanged = (row: number) => {
+        const changed = this.state.changed;
+        changed[row] = !changed[row];
+        this.setState({ changed });
+    }
+
+    async savePermission(permission: Permission): Promise<void> {
         await AccountService.doPut(`/resources/${this.props.resource._id}/permissions`, [permission]);
-        ContentAlert.success(Msg.localize('shareSuccess'));
-        this.props.onClose();
+        ContentAlert.success(Msg.localize('updateSuccess'));
     }
 
     public render(): React.ReactNode {
@@ -82,7 +88,7 @@ export class EditTheResource extends React.Component<EditTheResourceProps, EditT
 
                 <Modal
                     title={'Edit the resource - ' + this.props.resource.name}
-                    isLarge={true}
+                    isLarge
                     isOpen={this.state.isOpen}
                     onClose={this.handleToggleDialog}
                     actions={[
@@ -91,41 +97,44 @@ export class EditTheResource extends React.Component<EditTheResourceProps, EditT
                         </Button>,
                     ]}
                 >
-                    <DataList aria-label={Msg.localize('resources')}>
-                        <DataListItemRow>
-                            <DataListItemCells
-                                dataListCells={[
-                                    <DataListCell key='resource-name-header' width={3}>
-                                        <strong><Msg msgKey='User' /></strong>
-                                    </DataListCell>,
-                                    <DataListCell key='permissions-header' width={5}>
-                                        <strong><Msg msgKey='permissions' /></strong>
-                                    </DataListCell>,
-                                ]}
-                            />
-                        </DataListItemRow>
-                        {this.props.permissions.map((p, row) => {
-                            return (
-                                <DataListItem key={'resource-' + row} aria-labelledby={p.username}>
-                                    <DataListItemRow>
-                                        <DataListItemCells
-                                            dataListCells={[
-                                                <DataListCell key={'userName-' + row} width={5}>
-                                                    {p.username}
-                                                </DataListCell>,
-                                                <DataListCell key={'permission-' + row} width={5}>
-                                                    <PermissionSelect
-                                                        scopes={p.scopes}
-                                                        onSelect={selection => console.log(selection)}
-                                                    />
-                                                </DataListCell>
-                                            ]}
+                    <Form isHorizontal>
+                        {this.props.permissions.map((p, row) => (
+                            <React.Fragment>
+                                <FormGroup
+                                    fieldId={`username-${row}`}
+                                    label={Msg.localize('User')}
+                                >
+                                    <TextInput id={`username-${row}`} type="text" value={p.username} isDisabled />
+
+                                </FormGroup>
+                                <FormGroup
+                                    fieldId={`permissions-${row}`}
+                                    label={Msg.localize('permissions')}
+                                    isRequired
+                                >
+                                    <InputGroup>
+                                        <PermissionSelect
+                                            scopes={this.props.resource.scopes}
+                                            selected={p.scopes.map(s => new Scope(s))}
+                                            direction={row === this.props.permissions.length - 1 ? "up" : "down"}
+                                            onSelect={selection => {
+                                                p.scopes = selection.map(s => s.name);
+                                                this.updateChanged(row);
+                                            }}
                                         />
-                                    </DataListItemRow>
-                                </DataListItem>
-                            );
-                        })}
-                    </DataList>
+                                        <Button
+                                            id={`save-${row}`}
+                                            isDisabled={!this.state.changed[row]}
+                                            onClick={() => this.savePermission(p)}
+                                        >
+                                            <OkIcon />
+                                        </Button>
+                                    </InputGroup>
+                                </FormGroup>
+                                <hr />
+                            </React.Fragment>
+                        ))}
+                    </Form>
                 </Modal>
             </React.Fragment>
         );
