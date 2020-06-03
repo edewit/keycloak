@@ -80,10 +80,14 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
 
     private onContextToggle = (row: number, isOpen: boolean): void => {
         if (this.state.isModalActive) return;
-        const contextToggle = this.state.contextOpen;
-        contextToggle[row] = isOpen;
-        if (isOpen) this.fetchPermissions(this.props.resources.data[row], row);
-        this.setState({contextOpen: contextToggle});
+        const data = this.props.resources.data;
+        const contextOpen = this.state.contextOpen;
+        contextOpen[row] = isOpen;
+        if (isOpen) {
+            const index = row > data.length ? row - data.length - 1 : row;
+            this.fetchPermissions(data[index], index);
+        }
+        this.setState({ contextOpen });
     }
 
     private fetchPermissions(resource: Resource, row: number): void {
@@ -95,12 +99,11 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
             });
     }
 
-    private removeShare(resource: Resource, row: number): void {
+    private removeShare(resource: Resource, row: number): Promise<void> {
         const permissions = this.state.permissions.get(row)!.map(a => ({ username: a.username, scopes: [] }));
-        AccountService.doPut(`/resources/${resource._id}/permissions`, permissions)
+        return AccountService.doPut(`/resources/${resource._id}/permissions`, permissions)
             .then(() => {
-                ContentAlert.success(Msg.localize('shareSuccess'));
-                this.onToggle(row);
+                ContentAlert.success(Msg.localize('unShareSuccess'));
             });
     }
 
@@ -178,14 +181,19 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                 <Dropdown
                                     isPlain
                                     position={DropdownPosition.right}
-                                    toggle={<KebabToggle onToggle={isOpen => this.onContextToggle(row + this.props.resources.data.length, isOpen)}/>}
-                                    isOpen={this.state.contextOpen[row + this.props.resources.data.length]}
+                                    onSelect={() => this.setState({ isModalActive: true })}
+                                    toggle={<KebabToggle onToggle={isOpen => this.onContextToggle(row + this.props.resources.data.length + 1, isOpen)} />}
+                                    isOpen={this.state.contextOpen[row + this.props.resources.data.length + 1]}
                                     dropdownItems={[
                                         <ShareTheResource
                                             resource={resource}
                                             permissions={this.state.permissions.get(row)!}
                                             sharedWithUsersMsg={this.sharedWithUsersMessage(row)}
-                                            onClose={() => this.fetchPermissions(resource, row)}
+                                            onClose={() => {
+                                                this.setState({ isModalActive: false }, () => {
+                                                    this.onContextToggle(row + this.props.resources.data.length + 1, false);
+                                                });
+                                            }}
                                         >
                                             {
                                                 (toggle: () => void) => (
@@ -197,10 +205,19 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                         <EditTheResource
                                             resource={resource}
                                             permissions={this.state.permissions.get(row)!}
-                                            onClose={() => this.fetchPermissions(resource, row)}>
+                                            onClose={() => {
+                                                this.setState({ isModalActive: false }, () => {
+                                                    this.onContextToggle(row + this.props.resources.data.length + 1, false);
+                                                });
+                                            }}
+                                        >
                                             {
                                                 (toggle: () => void) => (
-                                                    <DropdownItem id={'mob-edit-' + row} key="mob-edit" onClick={toggle}>
+                                                    <DropdownItem
+                                                        id={'mob-edit-' + row} key="mob-edit"
+                                                        isDisabled={this.numOthers(row) < 0}
+                                                        onClick={toggle}
+                                                    >
                                                         <EditAltIcon /> Edit
                                                     </DropdownItem>)
                                             }
@@ -209,7 +226,13 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                             id={'mob-remove-' + row}
                                             key="mob-remove"
                                             isDisabled={this.numOthers(row) < 0}
-                                            onClick={() => this.removeShare(resource, row)}
+                                            onClick={() => {
+                                                this.removeShare(resource, row).then(() =>
+                                                    this.setState({ isModalActive: false }, () => {
+                                                        this.onContextToggle(row + this.props.resources.data.length + 1, false);
+                                                    })
+                                                );
+                                            }}
                                         >
                                             <Remove2Icon /> Remove
                                         </DropdownItem>
@@ -239,15 +262,15 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                 <Dropdown
                                     isPlain
                                     position={DropdownPosition.right}
-                                    toggle={<KebabToggle onToggle={isOpen => this.onContextToggle(row, isOpen)}/>}
-                                    onSelect={() => this.setState({isModalActive: true})}
+                                    toggle={<KebabToggle onToggle={isOpen => this.onContextToggle(row, isOpen)} />}
+                                    onSelect={() => this.setState({ isModalActive: true })}
                                     isOpen={this.state.contextOpen[row]}
                                     dropdownItems={[
                                         <EditTheResource
                                             resource={resource}
                                             permissions={this.state.permissions.get(row)!}
                                             onClose={() => {
-                                                this.setState({isModalActive: false}, () => {
+                                                this.setState({ isModalActive: false }, () => {
                                                     this.onContextToggle(row, false);
                                                 });
                                             }}
@@ -270,7 +293,13 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                             key="remove"
                                             component="button"
                                             isDisabled={this.numOthers(row) < 0}
-                                            onClick={() => this.removeShare(resource, row)}
+                                            onClick={() => {
+                                                this.removeShare(resource, row).then(() =>
+                                                    this.setState({ isModalActive: false }, () => {
+                                                        this.onContextToggle(row, false);
+                                                    })
+                                                );
+                                            }}
                                         >
                                             <Remove2Icon /> Remove
                                         </DropdownItem>
@@ -285,58 +314,11 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                             id={'ex-expand' + row}
                             isHidden={!this.state.isRowOpen[row]}
                         >
-                            <Stack gutter='md'>
-                                <StackItem isFilled>
-                                    <Level gutter='md'>
-                                        <LevelItem><span /></LevelItem>
-                                        <LevelItem id={'shared-with-user-message-' + row}>{this.sharedWithUsersMessage(row)}</LevelItem>
-                                        <LevelItem><span /></LevelItem>
-                                    </Level>
-                                </StackItem>
-                                <StackItem isFilled>
-                                    <Level gutter='md'>
-                                        <LevelItem><span /></LevelItem>
-                                        <LevelItem>
-                                            <ShareTheResource
-                                                resource={resource}
-                                                permissions={this.state.permissions.get(row)!}
-                                                sharedWithUsersMsg={this.sharedWithUsersMessage(row)}
-                                                onClose={() => this.fetchPermissions(resource, row)}
-                                            >
-                                                {
-                                                    (toggle: () => void) => (
-                                                        <Button variant="link" onClick={toggle}>
-                                                            <ShareAltIcon /> Share
-                                                        </Button>)
-                                                }
-                                            </ShareTheResource>
-                                        </LevelItem>
-                                        <LevelItem>
-                                            <EditTheResource
-                                                resource={resource}
-                                                permissions={this.state.permissions.get(row)!}
-                                                onClose={() => this.fetchPermissions(resource, row)}>
-                                                {
-                                                    (toggle: () => void) => (
-                                                        <Button variant="link" onClick={toggle}>
-                                                        <EditAltIcon /> Edit
-                                                    </Button>)
-                                                }
-                                            </EditTheResource>
-                                        </LevelItem>
-                                        <LevelItem>
-                                            <Button
-                                                isDisabled={this.numOthers(row) < 0}
-                                                variant="link"
-                                                onClick={() => this.removeShare(resource, row)}
-                                            >
-                                                <Remove2Icon /> Remove
-                                            </Button>
-                                        </LevelItem>
-                                        <LevelItem><span /></LevelItem>
-                                    </Level>
-                                </StackItem>
-                            </Stack>
+                            <Level gutter='md'>
+                                <LevelItem><span /></LevelItem>
+                                <LevelItem id={'shared-with-user-message-' + row}>{this.sharedWithUsersMessage(row)}</LevelItem>
+                                <LevelItem><span /></LevelItem>
+                            </Level>
                         </DataListContent>
                     </DataListItem>
                 ))}
