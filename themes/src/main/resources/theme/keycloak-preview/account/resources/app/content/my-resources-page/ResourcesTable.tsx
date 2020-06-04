@@ -198,7 +198,7 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                             {
                                                 (toggle: () => void) => (
                                                     <DropdownItem id={'mob-share-' + row} key="mob-share" onClick={toggle}>
-                                                        <ShareAltIcon /> Share
+                                                        <ShareAltIcon /> <Msg msgKey="share"/>
                                                     </DropdownItem>)
                                             }
                                         </ShareTheResource>,
@@ -218,7 +218,7 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                                         isDisabled={this.numOthers(row) < 0}
                                                         onClick={toggle}
                                                     >
-                                                        <EditAltIcon /> Edit
+                                                        <EditAltIcon /> <Msg msgKey="edit"/>
                                                     </DropdownItem>)
                                             }
                                         </EditTheResource>,
@@ -234,15 +234,15 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                                 );
                                             }}
                                         >
-                                            <Remove2Icon /> Remove
+                                            <Remove2Icon /> <Msg msgKey="unShare"/>
                                         </DropdownItem>
                                     ]}
                                 />
                             </DataListAction>
                             <DataListAction
+                                id={`actions-${row}`}
                                 className={css(DataListActionVisibility.visibleOnXl, DataListActionVisibility.hidden)}
-                                aria-labelledby="check-action-item3 check-action-action3"
-                                id="check-action-action3"
+                                aria-labelledby="Row actions"
                                 aria-label="Actions"
                             >
                                 <ShareTheResource
@@ -254,7 +254,7 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                     {
                                         (toggle: () => void) => (
                                             <Button variant="link" onClick={toggle}>
-                                                <ShareAltIcon /> Share
+                                                <ShareAltIcon /> <Msg msgKey="share"/>
                                             </Button>
                                         )
                                     }
@@ -284,7 +284,7 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                                         isDisabled={this.numOthers(row) < 0}
                                                         onClick={toggle}
                                                     >
-                                                        <EditAltIcon /> Edit
+                                                        <EditAltIcon /> <Msg msgKey="edit"/>
                                                     </DropdownItem>)
                                             }
                                         </EditTheResource>,
@@ -301,7 +301,7 @@ export class ResourcesTable extends AbstractResourcesTable<CollapsibleResourcesT
                                                 );
                                             }}
                                         >
-                                            <Remove2Icon /> Remove
+                                            <Remove2Icon /> <Msg msgKey="unShare"/>
                                         </DropdownItem>
                                     ]}
                                 />
