@@ -27,6 +27,7 @@ import org.keycloak.theme.Theme;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
@@ -61,9 +62,17 @@ public class ThemeResource {
 
         try {
             Theme theme = session.theme().getTheme(themeName, Theme.Type.valueOf(themType.toUpperCase()));
+
+            String contentType = MimeTypeUtil.getContentType(path);
+            CacheControl cacheControl = CacheControlUtil.getDefaultCacheControl();
+            InputStream brotliResource = theme.getResourceAsStream(path + ".br");
+            if (brotliResource != null) {
+                return Response.ok(brotliResource).type(contentType).encoding("br").cacheControl(cacheControl).build();
+            }
+
             InputStream resource = theme.getResourceAsStream(path);
             if (resource != null) {
-                return Response.ok(resource).type(MimeTypeUtil.getContentType(path)).cacheControl(CacheControlUtil.getDefaultCacheControl()).build();
+                return Response.ok(resource).type(contentType).cacheControl(cacheControl).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }

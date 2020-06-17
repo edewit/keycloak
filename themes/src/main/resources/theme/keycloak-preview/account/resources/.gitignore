@@ -1,6 +1,7 @@
 # ignore typescript-generated files
 *.js
 *.js.map
+*.br
 
 # ignore log files
 *.log
