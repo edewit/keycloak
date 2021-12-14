@@ -1,0 +1,25 @@
+{
+  "protocol": "Protocolo",
+  "credentials": "Credenciais",
+  "roles": "Roles",
+  "clientScopeSearch": {
+    "name": "Nome"
+  },
+  "settings": "Configurações",
+  "type": "Tipo",
+  "user": "Usuário",
+  "clientList": "Clientes",
+  "created": "Criado em",
+  "expires": "Expira em",
+  "count": "Quantidade",
+  "expiration": "Duração",
+  "authentication": "Autenticação",
+  "selectMethodType": {
+    "import": "Importar"
+  },
+  "revocation": "Revogação",
+  "push": "Enviar",
+  "clear": "Limpar",
+  "certificate": "Certificado",
+  "mappers": "Mapeamentos"
+}

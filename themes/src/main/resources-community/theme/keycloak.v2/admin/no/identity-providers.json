@@ -1,0 +1,9 @@
+{
+  "alias": "Alias",
+  "email": "E-postadresse",
+  "issuer": "Utgiver",
+  "prompt": "Prompt",
+  "syncModes": {
+    "import": "Importer"
+  }
+}

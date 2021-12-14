@@ -1,0 +1,9 @@
+{
+  "alias": "Pseudonimas",
+  "email": "El. paštas",
+  "issuer": "Išdavėjas",
+  "prompt": "Raginimas",
+  "syncModes": {
+    "import": "Importuoti"
+  }
+}

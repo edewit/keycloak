@@ -1,0 +1,17 @@
+{
+  "title": "Usuários",
+  "join": "Participar",
+  "leave": "Sair",
+  "username": "Usuário",
+  "email": "E-mail",
+  "impersonate": "Personificar",
+  "consents": "Consentimentos",
+  "revoke": "Revogar",
+  "save": "Salvar",
+  "cancel": "Cancelar",
+  "credentialType": "Tipo",
+  "password": "Senha",
+  "deleteBtn": "Excluir",
+  "showPasswordDataName": "Nome",
+  "showPasswordDataValue": "Valor"
+}

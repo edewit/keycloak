@@ -1,0 +1,9 @@
+{
+  "alias": "Alias",
+  "email": "E-mail",
+  "issuer": "Emissor",
+  "prompt": "Prompt",
+  "syncModes": {
+    "import": "Importar"
+  }
+}

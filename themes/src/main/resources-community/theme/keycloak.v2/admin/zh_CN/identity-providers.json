@@ -1,0 +1,9 @@
+{
+  "alias": "别名",
+  "email": "电子邮件",
+  "issuer": "发行人",
+  "prompt": "提示",
+  "syncModes": {
+    "import": "导入"
+  }
+}

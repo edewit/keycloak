@@ -1,0 +1,18 @@
+{
+  "title": "Naudotojai",
+  "join": "Prijungti",
+  "leave": "Palikti",
+  "username": "Naudotojo vardas",
+  "email": "El. paštas",
+  "status": "Būsena",
+  "impersonate": "Įkūnyti",
+  "consents": "Sutikimai",
+  "revoke": "Atšaukti",
+  "save": "Saugoti",
+  "cancel": "Atšaukti",
+  "credentialType": "Tipas",
+  "password": "Slaptažodis",
+  "deleteBtn": "Trinti",
+  "showPasswordDataName": "Pavadinimas",
+  "showPasswordDataValue": "Reikšmė"
+}

@@ -1,0 +1,18 @@
+{
+  "keys": "Keys",
+  "credentials": "Passwörter",
+  "roles": "Rollen",
+  "clientScopeSearch": {
+    "name": "Name"
+  },
+  "settings": "Einstellungen",
+  "type": "Typ",
+  "user": "Benutzer",
+  "clientList": "Clients",
+  "authentication": "Authentifizierung",
+  "selectMethodType": {
+    "import": "Importieren"
+  },
+  "clear": "Zurücksetzen",
+  "certificate": "Zertifikat"
+}

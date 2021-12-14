@@ -1,0 +1,27 @@
+{
+  "protocol": "Protokolas",
+  "keys": "Raktai",
+  "credentials": "Prisijungimo duomenys",
+  "roles": "Rolės",
+  "clientScopeSearch": {
+    "name": "Pavadinimas"
+  },
+  "settings": "Nustatymai",
+  "type": "Tipas",
+  "user": "Naudotojas",
+  "clientList": "Klientai",
+  "created": "Sukurta",
+  "expires": "Galioja iki",
+  "count": "Kiekis",
+  "expiration": "Galiojimas",
+  "authentication": "Autentifikavimas",
+  "selectMethodType": {
+    "import": "Importuoti"
+  },
+  "revocation": "Atšaukimai",
+  "clustering": "Klasteriai",
+  "push": "Informuoti apie atšaukimą",
+  "clear": "Išvalyti",
+  "certificate": "Sertifikatas",
+  "mappers": "Atributų atitikmenys"
+}

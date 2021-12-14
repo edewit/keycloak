@@ -1,0 +1,9 @@
+{
+  "alias": "エイリアス",
+  "email": "Eメール",
+  "issuer": "発行者（Issuer）",
+  "prompt": "プロンプト（prompt）",
+  "syncModes": {
+    "import": "インポート"
+  }
+}

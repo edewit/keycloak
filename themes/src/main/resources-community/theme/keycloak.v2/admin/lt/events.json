@@ -1,0 +1,11 @@
+{
+  "title": "Įvykiai",
+  "time": "Laikas",
+  "user": "Naudotojas",
+  "email": "El. paštas",
+  "client": "Klientas",
+  "realm": "Sritis",
+  "auth": "Autentifikacijos informacija",
+  "value": "Reikšmė",
+  "representation": "Reprezentacija"
+}

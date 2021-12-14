@@ -1,0 +1,17 @@
+{
+  "title": "Benutzer",
+  "join": "Beitreten",
+  "leave": "Verlassen",
+  "username": "Benutzername",
+  "email": "Email",
+  "status": "Status",
+  "consents": "Einwilligungen",
+  "revoke": "Widerrufen",
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "credentialType": "Typ",
+  "password": "Passwort",
+  "deleteBtn": "Löschen",
+  "showPasswordDataName": "Name",
+  "showPasswordDataValue": "Wert"
+}

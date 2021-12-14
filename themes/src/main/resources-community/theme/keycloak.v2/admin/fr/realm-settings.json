@@ -1,0 +1,16 @@
+{
+  "events": "Évènements",
+  "from": "De",
+  "host": "Hôte",
+  "port": "Port",
+  "authentication": "Authentification",
+  "username": "Nom de l''utilisateur",
+  "password": "Mot de passe",
+  "name": "Nom",
+  "certificate": "Certificat",
+  "endpoints": "Endpoints",
+  "sessions": "Sessions",
+  "save": "Sauver",
+  "headers": "En-têtes",
+  "xFrameOptions": "X-Frame-Options"
+}

@@ -1,0 +1,11 @@
+{
+  "title": "イベント",
+  "time": "日時",
+  "user": "ユーザー",
+  "email": "Eメール",
+  "client": "クライアント",
+  "realm": "レルム",
+  "auth": "認証",
+  "value": "値",
+  "representation": "Representation"
+}

@@ -1,0 +1,43 @@
+{
+  "events": "事件",
+  "expiration": "到期",
+  "email": "电子邮件",
+  "from": "来自",
+  "host": "主机",
+  "port": "端口号",
+  "authentication": "验证",
+  "username": "用户名",
+  "password": "密码",
+  "keys": "秘钥",
+  "keystore": "钥匙链",
+  "providers": "提供者",
+  "active": "活跃",
+  "type": "Type",
+  "name": "名称",
+  "providerId": "ID",
+  "kid": "孩子",
+  "provider": "提供程序",
+  "certificate": "证书",
+  "endpoints": "服务路径",
+  "sessions": "会话",
+  "clientProfileDescription": "描述",
+  "back": "返回",
+  "delete": "删除",
+  "save": "保存",
+  "clientUpdaterSourceGroups": "组",
+  "attributes": "属性",
+  "status": "状态",
+  "eventTypes": {
+    "IMPERSONATE": {
+      "name": "模拟"
+    },
+    "LOGOUT": {
+      "name": "注销"
+    },
+    "REGISTER": {
+      "name": "寄存器"
+    }
+  },
+  "headers": "标题",
+  "xFrameOptions": "X-Frame-Options"
+}

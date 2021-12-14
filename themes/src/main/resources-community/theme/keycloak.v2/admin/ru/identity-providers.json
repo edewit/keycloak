@@ -1,0 +1,9 @@
+{
+  "alias": "Синоним",
+  "email": "E-mail",
+  "issuer": "Эмитент",
+  "prompt": "Подсказка",
+  "syncModes": {
+    "import": "Импорт"
+  }
+}

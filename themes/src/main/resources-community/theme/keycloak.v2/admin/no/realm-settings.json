@@ -1,0 +1,38 @@
+{
+  "events": "Hendelser",
+  "expiration": "Holdbarhet",
+  "email": "E-postadresse",
+  "from": "Fra",
+  "host": "Vert",
+  "port": "Port",
+  "authentication": "Autentisering",
+  "username": "Brukernavn",
+  "password": "Passord",
+  "providers": "Leverandører",
+  "type": "Type",
+  "name": "Navn",
+  "providerId": "ID",
+  "provider": "Leverandør",
+  "certificate": "Sertifikat",
+  "endpoints": "Endepunkter",
+  "sessions": "Sesjoner",
+  "clientProfileDescription": "Beskrivelse",
+  "back": "Tilbake",
+  "delete": "Slett",
+  "save": "Lagre",
+  "clientUpdaterSourceGroups": "Grupper",
+  "attributes": "Attributter",
+  "eventTypes": {
+    "IMPERSONATE": {
+      "name": "Utgi deg for å være bruker"
+    },
+    "LOGOUT": {
+      "name": "Logg ut"
+    },
+    "REGISTER": {
+      "name": "Registrer"
+    }
+  },
+  "headers": "Headere",
+  "xFrameOptions": "Alternativer for X-Frame"
+}

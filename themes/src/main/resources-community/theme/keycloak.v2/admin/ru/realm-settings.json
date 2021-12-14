@@ -1,0 +1,43 @@
+{
+  "events": "События",
+  "expiration": "Истечение",
+  "email": "E-mail",
+  "from": "От",
+  "host": "Сервер",
+  "port": "Порт",
+  "authentication": "Аутентификация",
+  "username": "Имя пользователя",
+  "password": "Пароль",
+  "keys": "Ключи",
+  "keystore": "Хранилище ключей",
+  "providers": "Поставщики",
+  "active": "Активные",
+  "type": "Тип",
+  "name": "Имя",
+  "providerId": "ID",
+  "kid": "KID",
+  "provider": "Поставщик",
+  "certificate": "Сертификат",
+  "endpoints": "Конечные точки",
+  "sessions": "Сессии",
+  "clientProfileDescription": "Описание",
+  "back": "Назад",
+  "delete": "Удалить",
+  "save": "Сохранить",
+  "clientUpdaterSourceGroups": "Группы",
+  "attributes": "Атрибуты",
+  "status": "Статус",
+  "eventTypes": {
+    "IMPERSONATE": {
+      "name": "Имперсонировать"
+    },
+    "LOGOUT": {
+      "name": "Выход"
+    },
+    "REGISTER": {
+      "name": "Регистрация"
+    }
+  },
+  "headers": "Заголовки",
+  "xFrameOptions": "X-Frame-Options"
+}

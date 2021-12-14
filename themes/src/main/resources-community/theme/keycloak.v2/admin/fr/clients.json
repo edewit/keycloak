@@ -1,0 +1,11 @@
+{
+  "clientScopeSearch": {
+    "name": "Nom"
+  },
+  "clientList": "Clients",
+  "authentication": "Authentification",
+  "revocation": "Révocation",
+  "push": "Appuyer",
+  "clear": "Effacer",
+  "certificate": "Certificat"
+}

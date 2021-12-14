@@ -1,0 +1,10 @@
+{
+  "title": "認証",
+  "flows": "フロー",
+  "edit": "編集",
+  "requirement": "必要条件",
+  "requirements": {
+    "DISABLED": "無効"
+  },
+  "alias": "エイリアス"
+}

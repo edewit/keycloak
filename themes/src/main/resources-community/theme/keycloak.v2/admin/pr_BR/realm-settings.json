@@ -1,0 +1,38 @@
+{
+  "events": "Eventos",
+  "expiration": "Duração",
+  "email": "E-mail",
+  "from": "Remetente",
+  "host": "Host",
+  "port": "Porta",
+  "authentication": "Autenticação",
+  "username": "Usuário",
+  "password": "Senha",
+  "providers": "Provedores",
+  "type": "Tipo",
+  "name": "Nome",
+  "providerId": "ID",
+  "provider": "Provedor",
+  "certificate": "Certificado",
+  "endpoints": "Endpoints",
+  "sessions": "Sessões",
+  "clientProfileDescription": "Descrição",
+  "back": "Voltar",
+  "delete": "Excluir",
+  "save": "Salvar",
+  "clientUpdaterSourceGroups": "Grupos",
+  "attributes": "Atributos",
+  "eventTypes": {
+    "IMPERSONATE": {
+      "name": "Personificar"
+    },
+    "LOGOUT": {
+      "name": "Logout"
+    },
+    "REGISTER": {
+      "name": "Registro"
+    }
+  },
+  "headers": "Cabeçalhos",
+  "xFrameOptions": "X-Frame-Options"
+}

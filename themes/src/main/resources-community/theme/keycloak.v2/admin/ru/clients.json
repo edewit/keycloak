@@ -1,0 +1,27 @@
+{
+  "protocol": "Протокол",
+  "keys": "Ключи",
+  "credentials": "Учетные данные",
+  "roles": "Роли",
+  "clientScopeSearch": {
+    "name": "Имя"
+  },
+  "settings": "Настройки",
+  "type": "Тип",
+  "user": "Пользователь",
+  "clientList": "Клиенты",
+  "created": "Создано",
+  "expires": "Истекает",
+  "count": "Счетчик",
+  "expiration": "Истечение",
+  "authentication": "Аутентификация",
+  "selectMethodType": {
+    "import": "Импорт"
+  },
+  "revocation": "Отзыв",
+  "clustering": "Кластеризация",
+  "push": "Разослать",
+  "clear": "Очистить",
+  "certificate": "Сертификат",
+  "mappers": "Сопоставления"
+}

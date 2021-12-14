@@ -1,0 +1,30 @@
+{
+  "protocol": "プロトコル",
+  "keys": "鍵",
+  "credentials": "クレデンシャル",
+  "roles": "ロール",
+  "clientScopeSearch": {
+    "name": "名前"
+  },
+  "settings": "設定",
+  "policyEnforcementModes": {
+    "DISABLED": "無効"
+  },
+  "type": "タイプ",
+  "user": "ユーザー",
+  "clientList": "クライアント",
+  "created": "作成日時",
+  "expires": "有効期限",
+  "count": "カウント",
+  "expiration": "有効期限",
+  "authentication": "認証",
+  "selectMethodType": {
+    "import": "インポート"
+  },
+  "revocation": "無効化",
+  "clustering": "クラスタリング",
+  "push": "プッシュ",
+  "clear": "クリア",
+  "certificate": "証明書",
+  "mappers": "マッパー"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "用户",
+  "join": "加入",
+  "leave": "离开",
+  "username": "用户名",
+  "email": "电子邮件",
+  "status": "状态",
+  "impersonate": "模拟",
+  "consents": "同意",
+  "revoke": "撤消",
+  "save": "保存",
+  "cancel": "取消",
+  "credentialType": "Type",
+  "password": "密码",
+  "deleteBtn": "删除",
+  "showPasswordDataName": "名称",
+  "showPasswordDataValue": "Value"
+}

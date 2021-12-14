@@ -1,0 +1,20 @@
+{
+  "add": "Ajouter",
+  "save": "Sauver",
+  "cancel": "Annuler",
+  "clear": "Effacer",
+  "enabled": "Actif",
+  "name": "Nom",
+  "manage": "Gérer",
+  "clients": "Clients",
+  "sessions": "Sessions",
+  "events": "Évènements",
+  "configure": "Configurer",
+  "authentication": "Authentification",
+  "times": {
+    "seconds": "Secondes",
+    "minutes": "Minutes",
+    "hours": "Heures",
+    "days": "Jours"
+  }
+}

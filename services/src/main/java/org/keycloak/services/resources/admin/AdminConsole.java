@@ -17,6 +17,7 @@
 package org.keycloak.services.resources.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.io.IOUtils;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.HttpRequest;
@@ -50,15 +51,28 @@ import org.keycloak.utils.MediaType;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.ext.Providers;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -371,4 +385,11 @@ public class AdminConsole {
         return AdminRoot.getMessages(session, realm, lang, "admin-messages");
     }
 
+    @GET
+    @Path("{namespace}.json")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getMessages(@PathParam("namespace")String namespace, @QueryParam("lang") String lang) throws IOException {
+        File file = new File(String.format("themes/keycloak.v2/admin/%s/%s.json", lang, namespace));
+        return new String(Files.readAllBytes(file.toPath()));
+    }
 }

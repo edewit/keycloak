@@ -1,0 +1,31 @@
+{
+  "events": "Ereignisse",
+  "email": "Email",
+  "from": "Von",
+  "host": "Host",
+  "port": "Port",
+  "authentication": "Authentifizierung",
+  "username": "Benutzername",
+  "password": "Passwort",
+  "keys": "Keys",
+  "active": "Aktiv",
+  "type": "Typ",
+  "name": "Name",
+  "certificate": "Zertifikat",
+  "endpoints": "Endpoints",
+  "sessions": "Sessions",
+  "clientProfileDescription": "Beschreibung",
+  "delete": "Löschen",
+  "save": "Speichern",
+  "clientUpdaterSourceGroups": "Gruppen",
+  "attributes": "Attribute",
+  "status": "Status",
+  "eventTypes": {
+    "LOGOUT": {
+      "name": "Ausloggen"
+    },
+    "REGISTER": {
+      "name": "Registrieren"
+    }
+  }
+}

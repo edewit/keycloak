@@ -1,0 +1,46 @@
+{
+  "events": "Įvykiai",
+  "expiration": "Galiojimas",
+  "email": "El. paštas",
+  "from": "Nuo",
+  "host": "Serveris",
+  "port": "Prievadas",
+  "authentication": "Autentifikavimas",
+  "username": "Naudotojo vardas",
+  "password": "Slaptažodis",
+  "keys": "Raktai",
+  "keystore": "Raktų saugykla",
+  "providers": "Teikėjai",
+  "active": "Aktyvus",
+  "type": "Tipas",
+  "name": "Pavadinimas",
+  "providerId": "ID",
+  "kid": [
+    "Kid",
+    "KID"
+  ],
+  "provider": "Teikėjas",
+  "certificate": "Sertifikatas",
+  "endpoints": "Prieigos adresai",
+  "sessions": "Sesijos",
+  "clientProfileDescription": "Aprašymas",
+  "back": "Atgal",
+  "delete": "Trinti",
+  "save": "Saugoti",
+  "clientUpdaterSourceGroups": "Grupės",
+  "attributes": "Atributai",
+  "status": "Būsena",
+  "eventTypes": {
+    "IMPERSONATE": {
+      "name": "Įkūnyti"
+    },
+    "LOGOUT": {
+      "name": "Seanso pabaiga"
+    },
+    "REGISTER": {
+      "name": "Registracijos"
+    }
+  },
+  "headers": "Antraštės",
+  "xFrameOptions": "X-Frame-Options"
+}

@@ -1,0 +1,20 @@
+{
+  "title": "ユーザー",
+  "join": "参加",
+  "leave": "外す",
+  "username": "ユーザー名",
+  "email": "Eメール",
+  "status": "ステータス",
+  "disabled": "無効",
+  "impersonate": "代理ログイン",
+  "consents": "同意",
+  "revoke": "無効化",
+  "save": "保存",
+  "cancel": "キャンセル",
+  "credentialType": "タイプ",
+  "credentialData": "データ",
+  "password": "パスワード",
+  "deleteBtn": "削除",
+  "showPasswordDataName": "名前",
+  "showPasswordDataValue": "値"
+}

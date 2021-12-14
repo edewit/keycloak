@@ -1,0 +1,11 @@
+{
+  "title": "事件",
+  "time": "时间",
+  "user": "用户",
+  "email": "电子邮件",
+  "client": "客户端",
+  "realm": "Realm",
+  "auth": "Auth",
+  "value": "Value",
+  "representation": "表示"
+}

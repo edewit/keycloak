@@ -1,0 +1,18 @@
+{
+  "title": "Пользователи",
+  "join": "Присоединиться",
+  "leave": "Покинуть",
+  "username": "Имя пользователя",
+  "email": "E-mail",
+  "status": "Статус",
+  "impersonate": "Имперсонировать",
+  "consents": "Согласия",
+  "revoke": "Отобрать",
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "credentialType": "Тип",
+  "password": "Пароль",
+  "deleteBtn": "Удалить",
+  "showPasswordDataName": "Имя",
+  "showPasswordDataValue": "Значение"
+}

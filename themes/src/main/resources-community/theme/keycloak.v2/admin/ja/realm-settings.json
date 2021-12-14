@@ -1,0 +1,45 @@
+{
+  "events": "イベント",
+  "expiration": "有効期限",
+  "email": "Eメール",
+  "from": "差出人",
+  "host": "ホスト",
+  "port": "ポート",
+  "authentication": "認証",
+  "username": "ユーザー名",
+  "password": "パスワード",
+  "keys": "鍵",
+  "keystore": "キーストア",
+  "providers": "プロバイダー",
+  "algorithm": "アルゴリズム",
+  "active": "アクティブ",
+  "type": "タイプ",
+  "name": "名前",
+  "providerId": "ID",
+  "kid": "Kid",
+  "provider": "プロバイダー",
+  "certificate": "証明書",
+  "endpoints": "エンドポイント",
+  "sessions": "セッション",
+  "clientProfileDescription": "説明",
+  "back": "戻る",
+  "delete": "削除",
+  "save": "保存",
+  "clientUpdaterSourceGroups": "グループ",
+  "attributes": "属性",
+  "status": "ステータス",
+  "eventTypes": {
+    "IMPERSONATE": {
+      "name": "代理ログイン"
+    },
+    "LOGOUT": {
+      "name": "ログアウト"
+    },
+    "REGISTER": {
+      "name": "登録"
+    }
+  },
+  "headers": "ヘッダー",
+  "xFrameOptions": "X-Frame-Options",
+  "xXSSProtection": "X-XSS-Protection"
+}

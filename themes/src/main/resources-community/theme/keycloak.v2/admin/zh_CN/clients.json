@@ -1,0 +1,27 @@
+{
+  "protocol": "协议",
+  "keys": "秘钥",
+  "credentials": "凭据",
+  "roles": "角色",
+  "clientScopeSearch": {
+    "name": "名称"
+  },
+  "settings": "设置",
+  "type": "Type",
+  "user": "用户",
+  "clientList": "客户端",
+  "created": "已创建",
+  "expires": "到期",
+  "count": "Count",
+  "expiration": "到期",
+  "authentication": "验证",
+  "selectMethodType": {
+    "import": "导入"
+  },
+  "revocation": "回收",
+  "clustering": "聚类",
+  "push": "推送",
+  "clear": "清除",
+  "certificate": "证书",
+  "mappers": "Mappers"
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Hendelser",
+  "time": "Tid",
+  "user": "Bruker",
+  "email": "E-postadresse",
+  "client": "Klient",
+  "realm": "Sikkerhetsdomene",
+  "auth": "Auth",
+  "value": "Verdi",
+  "representation": "Representasjon"
+}

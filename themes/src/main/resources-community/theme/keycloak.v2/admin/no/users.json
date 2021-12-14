@@ -1,0 +1,17 @@
+{
+  "title": "Brukere",
+  "join": "Bli med",
+  "leave": "Forlat",
+  "username": "Brukernavn",
+  "email": "E-postadresse",
+  "impersonate": "Utgi deg for å være bruker",
+  "consents": "Samtykke",
+  "revoke": "Opphev",
+  "save": "Lagre",
+  "cancel": "Avbryt",
+  "credentialType": "Type",
+  "password": "Passord",
+  "deleteBtn": "Slett",
+  "showPasswordDataName": "Navn",
+  "showPasswordDataValue": "Verdi"
+}

@@ -1,0 +1,26 @@
+{
+  "protocol": "Protokoll",
+  "credentials": "Innloggingsdetaljer",
+  "roles": "Roller",
+  "clientScopeSearch": {
+    "name": "Navn"
+  },
+  "settings": "Innstillinger",
+  "type": "Type",
+  "user": "Bruker",
+  "clientList": "Klienter",
+  "created": "Opprettet",
+  "expires": "Utløper",
+  "count": "Teller",
+  "expiration": "Holdbarhet",
+  "authentication": "Autentisering",
+  "selectMethodType": {
+    "import": "Importer"
+  },
+  "revocation": "Oppheving",
+  "clustering": "Clustering",
+  "push": "Send",
+  "clear": "Tøm",
+  "certificate": "Sertifikat",
+  "mappers": "Mappere"
+}
