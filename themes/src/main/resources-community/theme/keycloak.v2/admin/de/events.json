@@ -3,6 +3,6 @@
   "time": "Zeit",
   "user": "Benutzer",
   "email": "Email",
-  "client": "Client",
+  "ipAddress": "IP-Adresse",
   "value": "Wert"
 }

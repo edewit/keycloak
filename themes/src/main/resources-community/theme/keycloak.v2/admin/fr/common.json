@@ -1,20 +1,21 @@
 {
   "add": "Ajouter",
   "save": "Sauver",
-  "cancel": "Annuler",
   "clear": "Effacer",
   "enabled": "Actif",
-  "name": "Nom",
   "manage": "Gérer",
   "clients": "Clients",
   "sessions": "Sessions",
   "events": "Évènements",
   "configure": "Configurer",
+  "realmSettings": "Configurations du domaine",
   "authentication": "Authentification",
+  "userFederation": "Regroupement Utilisateur",
   "times": {
     "seconds": "Secondes",
     "minutes": "Minutes",
     "hours": "Heures",
     "days": "Jours"
-  }
+  },
+  "password": "Mot de passe"
 }

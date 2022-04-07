@@ -1,6 +1,14 @@
 {
+  "clientId": "Client-ID",
+  "endpoints": "Endpoints",
   "email": "Email",
+  "logoutUrl": "Logout-URL",
+  "syncMode": "Synchronisationsmodus",
   "syncModes": {
-    "import": "Importieren"
-  }
+    "inherit": "Standard erben",
+    "import": "Importieren",
+    "legacy": "Legacy",
+    "force": "Erzwingen"
+  },
+  "syncModeOverride": "Überschriebene Synchronisation"
 }

@@ -1,5 +1,9 @@
 {
-  "client-updater-source-groups": {
-    "label": "Gruppen"
+  "usermodel": {
+    "clientRoleMapping": {
+      "client": {
+        "label": "Client-ID"
+      }
+    }
   }
 }
