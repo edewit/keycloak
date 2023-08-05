@@ -13,3 +13,9 @@ export { useStoredState } from "./utils/useStoredState";
 export { isDefined } from "./utils/isDefined";
 export { createNamedContext } from "./utils/createNamedContext";
 export { useRequiredContext } from "./utils/useRequiredContext";
+export type { Field } from "./controls/user-profile/UserProfileAttribute";
+export {
+  FIELDS,
+  DEFAULT_ROLES,
+  fieldName,
+} from "./controls/user-profile/UserProfileAttribute";

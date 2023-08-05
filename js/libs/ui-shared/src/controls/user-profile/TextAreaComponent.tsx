@@ -1,8 +1,7 @@
-import { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
+import { UserProfileAttribute, fieldName } from "./UserProfileAttribute";
 import { useFormContext } from "react-hook-form";
-import { KeycloakTextArea } from "../../components/keycloak-text-area/KeycloakTextArea";
 import { UserProfileGroup } from "./UserProfileGroup";
-import { fieldName } from "../utils";
+import { KeycloakTextArea } from "../keycloak-text-area/KeycloakTextArea";
 
 export const TextAreaComponent = (attr: UserProfileAttribute) => {
   const { register } = useFormContext();

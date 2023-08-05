@@ -1,11 +1,8 @@
-import { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
+import { UserProfileAttribute, label } from "./UserProfileAttribute";
 import { FormGroup } from "@patternfly/react-core";
 import { PropsWithChildren } from "react";
 import { useFormContext } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-
-import { HelpItem } from "ui-shared";
-import { label } from "../utils";
+import { HelpItem } from "../HelpItem";
 
 export type UserProfileFieldsProps = UserProfileAttribute & {
   roles?: string[];
@@ -19,7 +16,8 @@ export const UserProfileGroup = ({
   children,
   ...attribute
 }: PropsWithChildren<UserProfileFieldsProps>) => {
-  const { t } = useTranslation("users");
+  //TODO what is there TODO
+  const t = (text: string) => text;
   const helpText = attribute.annotations?.["inputHelperTextBefore"] as string;
 
   const {

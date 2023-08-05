@@ -1,17 +1,14 @@
 import { Select, SelectOption } from "@patternfly/react-core";
 import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 
-import { Options } from "../UserProfileFields";
-import { DEFAULT_ROLES, fieldName } from "../utils";
+import { DEFAULT_ROLES, fieldName, Options } from "./UserProfileAttribute";
 import { UserProfileFieldsProps, UserProfileGroup } from "./UserProfileGroup";
 
 export const SelectComponent = ({
   roles = [],
   ...attribute
 }: UserProfileFieldsProps) => {
-  const { t } = useTranslation("users");
   const { control } = useFormContext();
   const [open, setOpen] = useState(false);
 
@@ -42,9 +39,9 @@ export const SelectComponent = ({
                 setOpen(false);
               }
             }}
-            selections={field.value ? field.value : t("common:choose")}
+            selections={field.value ? field.value : "Choose"}
             variant={Array.isArray(field.value) ? "typeaheadmulti" : "single"}
-            aria-label={t("common:selectOne")}
+            aria-label="select one"
             isOpen={open}
             isDisabled={
               !(attribute.permissions?.edit || DEFAULT_ROLES).some((r) =>

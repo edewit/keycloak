@@ -1,9 +1,11 @@
-import { UserProfileAttribute } from "@keycloak/keycloak-admin-client/lib/defs/userProfileConfig";
+import {
+  UserProfileAttribute,
+  fieldName,
+  Options,
+} from "./UserProfileAttribute";
 import { Checkbox, Radio } from "@patternfly/react-core";
 import { Controller, useFormContext } from "react-hook-form";
 import { UserProfileGroup } from "./UserProfileGroup";
-import { Options } from "../UserProfileFields";
-import { fieldName } from "../utils";
 
 export const OptionComponent = (attr: UserProfileAttribute) => {
   const { control } = useFormContext();
