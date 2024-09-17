@@ -20,15 +20,15 @@ export const LinkedAccounts = () => {
     LinkedAccountRepresentation[]
   >([]);
 
-  const [paramsUnlinked, setParamsUnlinked] = useState<Record<string, any>>({
+  const [paramsUnlinked, setParamsUnlinked] = useState<Record<string, string>>({
     first: "0",
     max: "6",
-    linked: false,
+    linked: "false",
   });
-  const [paramsLinked, setParamsLinked] = useState<Record<string, any>>({
+  const [paramsLinked, setParamsLinked] = useState<Record<string, string>>({
     first: "0",
     max: "6",
-    linked: true,
+    linked: "true",
   });
   const [key, setKey] = useState(1);
   const refresh = () => setKey(key + 1);
@@ -57,7 +57,7 @@ export const LinkedAccounts = () => {
           </Title>
           <LinkedAccountsToolbar
             onFilter={(search) =>
-              setParamsLinked({ ...paramsLinked, first: 0, search })
+              setParamsLinked({ ...paramsLinked, first: "0", search })
             }
             count={linkedAccounts.length}
             first={parseInt(paramsLinked["first"])}
@@ -65,15 +65,13 @@ export const LinkedAccounts = () => {
             onNextClick={() => {
               setParamsLinked({
                 ...paramsLinked,
-                first:
-                  parseInt(paramsLinked.first) + parseInt(paramsLinked.max) - 1,
+                first: `${parseInt(paramsLinked.first) + parseInt(paramsLinked.max) - 1}`,
               });
             }}
             onPreviousClick={() =>
               setParamsLinked({
                 ...paramsLinked,
-                first:
-                  parseInt(paramsLinked.first) - parseInt(paramsLinked.max) + 1,
+                first: `${parseInt(paramsLinked.first) - parseInt(paramsLinked.max) + 1}`,
               })
             }
             onPerPageSelect={(first, max) =>
@@ -83,13 +81,13 @@ export const LinkedAccounts = () => {
                 max: `${max}`,
               })
             }
-            hasNext={linkedAccounts.length > paramsLinked.max - 1}
+            hasNext={linkedAccounts.length > parseInt(paramsLinked.max) - 1}
           />
           <DataList id="linked-idps" aria-label={t("linkedLoginProviders")}>
             {linkedAccounts.length > 0 ? (
               linkedAccounts.map(
                 (account, index) =>
-                  index !== paramsLinked.max - 1 && (
+                  index !== parseInt(paramsLinked.max) - 1 && (
                     <AccountRow
                       key={account.providerName}
                       account={account}
@@ -113,7 +111,7 @@ export const LinkedAccounts = () => {
           </Title>
           <LinkedAccountsToolbar
             onFilter={(search) =>
-              setParamsUnlinked({ ...paramsUnlinked, first: 0, search })
+              setParamsUnlinked({ ...paramsUnlinked, first: "0", search })
             }
             count={unlinkedAccounts.length}
             first={parseInt(paramsUnlinked["first"])}
@@ -121,19 +119,21 @@ export const LinkedAccounts = () => {
             onNextClick={() => {
               setParamsUnlinked({
                 ...paramsUnlinked,
-                first:
+                first: `${
                   parseInt(paramsUnlinked.first) +
                   parseInt(paramsUnlinked.max) -
-                  1,
+                  1
+                }`,
               });
             }}
             onPreviousClick={() =>
               setParamsUnlinked({
                 ...paramsUnlinked,
-                first:
+                first: `${
                   parseInt(paramsUnlinked.first) -
                   parseInt(paramsUnlinked.max) +
-                  1,
+                  1
+                }`,
               })
             }
             onPerPageSelect={(first, max) =>
@@ -143,13 +143,13 @@ export const LinkedAccounts = () => {
                 max: `${max}`,
               })
             }
-            hasNext={unlinkedAccounts.length > paramsUnlinked.max - 1}
+            hasNext={unlinkedAccounts.length > parseInt(paramsUnlinked.max) - 1}
           />
           <DataList id="unlinked-idps" aria-label={t("unlinkedLoginProviders")}>
             {unlinkedAccounts.length > 0 ? (
               unlinkedAccounts.map(
                 (account, index) =>
-                  index !== paramsUnlinked.max - 1 && (
+                  index !== parseInt(paramsUnlinked.max) - 1 && (
                     <AccountRow
                       key={account.providerName}
                       account={account}

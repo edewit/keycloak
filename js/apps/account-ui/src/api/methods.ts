@@ -111,7 +111,7 @@ export async function getCredentials({ signal, context }: CallOptions) {
 
 export async function getLinkedAccounts(
   { signal, context }: CallOptions,
-  requestParams: Record<string, any>,
+  requestParams: Record<string, string>,
 ) {
   const response = await request("/linked-accounts", context, {
     searchParams: requestParams,
