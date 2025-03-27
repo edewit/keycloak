@@ -129,7 +129,9 @@ export const GroupSelect = ({
                     icon={<MinusCircleIcon />}
                     onClick={() => {
                       setValue(name!, [
-                        ...(groups || []).filter(({ id }) => id !== group.id),
+                        ...(groups || [])
+                          .filter(({ id }) => id !== group.id)
+                          .map(({ id }) => id),
                       ]);
                       setGroups([
                         ...groups.filter(({ id }) => id !== group.id),
@@ -142,7 +144,7 @@ export const GroupSelect = ({
           </Tbody>
         </Table>
       )}
-      {errors.groups && <FormErrorText message={t("requiredGroups")} />}
+      {errors?.[name!] && <FormErrorText message={t("requiredGroups")} />}
     </FormGroup>
   );
 };

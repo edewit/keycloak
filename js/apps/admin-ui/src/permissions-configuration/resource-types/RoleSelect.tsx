@@ -1,33 +1,31 @@
-import { useState } from "react";
-import { Button, FormGroup } from "@patternfly/react-core";
-import { MinusCircleIcon } from "@patternfly/react-icons";
-import { Table, Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table";
-import { useFormContext } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useAdminClient } from "../../admin-client";
 import {
   FormErrorText,
   HelpItem,
   useFetch,
 } from "@keycloak/keycloak-ui-shared";
+import { Button, FormGroup } from "@patternfly/react-core";
+import { MinusCircleIcon } from "@patternfly/react-icons";
+import { Table, Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table";
+import { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import { useAdminClient } from "../../admin-client";
+import { ComponentProps } from "../../components/dynamic/components";
 import { AddRoleMappingModal } from "../../components/role-mapping/AddRoleMappingModal";
 import { Row, ServiceRole } from "../../components/role-mapping/RoleMapping";
 import { PermissionsConfigurationTabsParams } from "../routes/PermissionsConfigurationTabs";
-import { useParams } from "react-router-dom";
 
-type RoleSelectorProps = {
-  name: string;
-};
-
-export const RoleSelect = ({ name }: RoleSelectorProps) => {
+export const RoleSelect = ({ name, label, helpText }: ComponentProps) => {
   const { adminClient } = useAdminClient();
   const { t } = useTranslation();
   const {
+    register,
     getValues,
     setValue,
     formState: { errors },
   } = useFormContext<{ [key: string]: string[] }>();
-  const values = getValues(name) || [];
+  const values = getValues(name!) || [];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<Row[]>([]);
   const { tab } = useParams<PermissionsConfigurationTabsParams>();
@@ -53,17 +51,14 @@ export const RoleSelect = ({ name }: RoleSelectorProps) => {
     [],
   );
 
+  useEffect(() => {
+    register(name!, { validate: (value: string[]) => value.length > 0 });
+  }, []);
+
   return (
     <FormGroup
-      label={tab !== "evaluation" ? t("roles") : t("role")}
-      labelIcon={
-        <HelpItem
-          helpText={
-            tab !== "evaluation" ? t("policyRolesHelp") : t("selectRole")
-          }
-          fieldLabelId="roles"
-        />
-      }
+      label={label}
+      labelIcon={<HelpItem helpText={helpText} fieldLabelId="roles" />}
       fieldId={name}
       isRequired
     >
@@ -72,7 +67,7 @@ export const RoleSelect = ({ name }: RoleSelectorProps) => {
           id="role"
           type="roles"
           onAssign={(rows) => {
-            setValue(name, [
+            setValue(name!, [
               ...values,
               ...rows
                 .filter((row) => row.role.id !== undefined)
@@ -114,8 +109,10 @@ export const RoleSelect = ({ name }: RoleSelectorProps) => {
                     icon={<MinusCircleIcon />}
                     onClick={() => {
                       setValue(
-                        name,
-                        values.filter((id) => id !== row.role.id),
+                        name!,
+                        values
+                          .filter((id) => id !== row.role.id)
+                          .map((id) => id),
                       );
                       setSelectedRoles(
                         selectedRoles.filter((s) => s.role.id !== row.role.id),
@@ -128,7 +125,7 @@ export const RoleSelect = ({ name }: RoleSelectorProps) => {
           </Tbody>
         </Table>
       )}
-      {errors[name] && <FormErrorText message={t("requiredRoles")} />}
+      {errors[name!] && <FormErrorText message={t("requiredRoles")} />}
     </FormGroup>
   );
 };

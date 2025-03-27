@@ -74,7 +74,9 @@ export const SearchDropdown = ({
     setKey((prevKey) => prevKey + 1);
   }, [search]);
 
-  const ComponentType = getComponentType(selectedType || "clients");
+  const ComponentType = getComponentType(
+    selectedType?.toLocaleLowerCase() || "clients",
+  );
 
   return (
     <Dropdown
@@ -123,7 +125,7 @@ export const SearchDropdown = ({
             <>
               <ComponentType
                 name="resource"
-                label={`${selectedType}Resources`}
+                label={`${selectedType.toLowerCase()}Resources`}
                 helpText={t("resourceTypeHelpText", {
                   resourceType: selectedType,
                 })}

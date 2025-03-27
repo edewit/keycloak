@@ -54,7 +54,6 @@ export const ResourceType = ({ resourceType }: ResourceTypeProps) => {
         }
         fieldId="EnforceAccessTo"
         hasNoPaddingTop
-        isRequired
       >
         <Radio
           id="allResources"
@@ -90,6 +89,7 @@ export const ResourceType = ({ resourceType }: ResourceTypeProps) => {
           })}
           defaultValue={[]}
           variant="typeaheadMulti"
+          isRequired
         />
       )}
     </>
