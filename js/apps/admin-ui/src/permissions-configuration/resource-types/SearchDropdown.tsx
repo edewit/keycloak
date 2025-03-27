@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import useToggle from "../../utils/useToggle";
-import { ResourceType } from "./ResourceType";
+import { getComponentType } from "./ResourceType";
 
 export type SearchForm = {
   name?: string;
@@ -74,6 +74,8 @@ export const SearchDropdown = ({
     setKey((prevKey) => prevKey + 1);
   }, [search]);
 
+  const ComponentType = getComponentType(selectedType || "clients");
+
   return (
     <Dropdown
       toggle={(ref) => (
@@ -117,11 +119,16 @@ export const SearchDropdown = ({
               onChange(value);
             }}
           />
-          {selectedType !== "" && (
+          {selectedType && selectedType !== "" && ComponentType && (
             <>
-              <ResourceType
-                resourceType={selectedType || "clients"}
-                withEnforceAccessTo={false}
+              <ComponentType
+                name="resource"
+                label={`${selectedType}Resources`}
+                helpText={t("resourceTypeHelpText", {
+                  resourceType: selectedType,
+                })}
+                defaultValue={[]}
+                variant="typeahead"
               />
               <SelectControl
                 name={"scope"}

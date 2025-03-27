@@ -32,7 +32,7 @@ import { useRealm } from "../../context/realm-context/RealmContext";
 import { ForbiddenSection } from "../../ForbiddenSection";
 import useSortedResourceTypes from "../../utils/useSortedResourceTypes";
 import { PermissionEvaluationResult } from "./PermissionEvaluationResult";
-import { COMPONENTS } from "../resource-types/ResourceType";
+import { getComponentType } from "../resource-types/ResourceType";
 
 interface EvaluateFormInputs
   extends Omit<ResourceEvaluation, "context" | "resources"> {
@@ -91,8 +91,9 @@ const PermissionEvaluateContent = ({ client }: Props) => {
     return resource?.scopes || [];
   }, [selectedResourceType, resourceTypes]);
 
-  const ResourceTypeComponent =
-    COMPONENTS[selectedResourceType?.toLowerCase() || ""];
+  const ResourceTypeComponent = getComponentType(
+    selectedResourceType?.toLowerCase() || "",
+  );
 
   const evaluate = async () => {
     if (!(await trigger())) {

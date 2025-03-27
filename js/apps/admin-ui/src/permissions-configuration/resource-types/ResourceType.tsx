@@ -9,11 +9,10 @@ import { RoleSelect } from "./RoleSelect";
 import { ClientSelectComponent } from "./ClientSelectComponent";
 
 type ResourceTypeProps = {
-  withEnforceAccessTo?: boolean;
   resourceType: string;
 };
 
-export const COMPONENTS: {
+const COMPONENTS: {
   [index: string]: (props: any) => JSX.Element;
 } = {
   users: UserSelect,
@@ -22,74 +21,69 @@ export const COMPONENTS: {
   roles: RoleSelect,
 } as const;
 
-export const isValidComponentType = (value: string) => value in COMPONENTS;
+export function getComponentType(type: string) {
+  if (isValidComponentType(type)) {
+    return COMPONENTS[type];
+  }
+  return null;
+}
 
-export const ResourceType = ({
-  resourceType,
-  withEnforceAccessTo = true,
-}: ResourceTypeProps) => {
+const isValidComponentType = (value: string) => value in COMPONENTS;
+
+export const ResourceType = ({ resourceType }: ResourceTypeProps) => {
   const { t } = useTranslation();
   const form = useFormContext();
   const resourceIds: string[] = form.getValues("resources");
   const normalizedResourceType = resourceType.toLowerCase();
 
   const [isSpecificResources, setIsSpecificResources] = useState(
-    resourceIds?.some((id) => id !== resourceType) || !withEnforceAccessTo,
+    resourceIds?.some((id) => id !== resourceType),
   );
 
-  function getComponentType() {
-    if (isValidComponentType(normalizedResourceType)) {
-      return COMPONENTS[normalizedResourceType];
-    }
-    return null;
-  }
-
-  const ComponentType = getComponentType();
+  const ComponentType = getComponentType(normalizedResourceType);
 
   return (
     <>
-      {withEnforceAccessTo && (
-        <FormGroup
-          label={t("enforceAccessTo")}
-          labelIcon={
-            <HelpItem
-              helpText={t("enforceAccessToHelpText")}
-              fieldLabelId="enforce-access-to"
-            />
-          }
-          fieldId="EnforceAccessTo"
-          hasNoPaddingTop
-          isRequired
-        >
-          <Radio
-            id="allResources"
-            data-testid="allResources"
-            isChecked={!isSpecificResources}
-            name="EnforceAccessTo"
-            label={t(`allResourceType`, { resourceType })}
-            onChange={() => {
-              setIsSpecificResources(false);
-              form.setValue("resources", []);
-            }}
-            className="pf-v5-u-mb-md"
+      <FormGroup
+        label={t("enforceAccessTo")}
+        labelIcon={
+          <HelpItem
+            helpText={t("enforceAccessToHelpText")}
+            fieldLabelId="enforce-access-to"
           />
-          <Radio
-            id="specificResources"
-            data-testid="specificResources"
-            isChecked={isSpecificResources}
-            name="EnforceAccessTo"
-            label={t(`specificResourceType`, { resourceType })}
-            onChange={() => {
-              setIsSpecificResources(true);
-              form.setValue("resources", []);
-            }}
-            className="pf-v5-u-mb-md"
-          />
-        </FormGroup>
-      )}
+        }
+        fieldId="EnforceAccessTo"
+        hasNoPaddingTop
+        isRequired
+      >
+        <Radio
+          id="allResources"
+          data-testid="allResources"
+          isChecked={!isSpecificResources}
+          name="EnforceAccessTo"
+          label={t(`allResourceType`, { resourceType })}
+          onChange={() => {
+            setIsSpecificResources(false);
+            form.setValue("resources", []);
+          }}
+          className="pf-v5-u-mb-md"
+        />
+        <Radio
+          id="specificResources"
+          data-testid="specificResources"
+          isChecked={isSpecificResources}
+          name="EnforceAccessTo"
+          label={t(`specificResourceType`, { resourceType })}
+          onChange={() => {
+            setIsSpecificResources(true);
+            form.setValue("resources", []);
+          }}
+          className="pf-v5-u-mb-md"
+        />
+      </FormGroup>
       {isSpecificResources && ComponentType && (
         <ComponentType
-          name={withEnforceAccessTo ? "resources" : "resource"}
+          name="resources"
           label={`${normalizedResourceType}Resources`}
           helpText={t("resourceTypeHelpText", {
             resourceType: normalizedResourceType,
