@@ -92,15 +92,14 @@ export const RoleSelect = ({ name, isRadio = false }: RoleSelectorProps) => {
         />
       )}
       <AddRoleButton
-        label={tab !== "evaluation" ? t("addRoles") : t("selectRole")}
+        label={isRadio ? t("selectRole") : t("addRoles")}
         data-testid="select-role-button"
         variant="secondary"
         onFilerTypeChange={(type) => {
           setFilterType(type);
           setIsModalOpen(true);
-        }}>
-           {isRadio ? t("selectRole") : t("addRoles")}
-      </Button>
+        }}
+      />
       {selectedRoles.length > 0 && (
         <Table variant="compact">
           <Thead>
