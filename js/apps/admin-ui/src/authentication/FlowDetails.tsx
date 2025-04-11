@@ -287,7 +287,7 @@ export default function FlowDetails() {
     <DropdownItem key="duplicate" onClick={() => setOpen(true)}>
       {t("duplicate")}
     </DropdownItem>,
-    ...(!builtIn
+    ...(!builtIn && !usedBy
       ? [
           <DropdownItem
             data-testid="edit-flow"
