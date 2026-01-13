@@ -1,11 +1,11 @@
 package org.keycloak.models.mapper;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.representations.admin.v2.BaseClientRepresentation;
 
@@ -21,6 +21,7 @@ public abstract class BaseClientModelMapper<T extends BaseClientRepresentation> 
 
     @Override
     public BaseClientRepresentation fromModel(ClientModel model) {
+        Objects.requireNonNull(model, "model must not be null");
         // We don't want reps to depend on any unnecessary fields deps, hence no generated builder.
 
         T rep = createClientRepresentation();
@@ -40,11 +41,7 @@ public abstract class BaseClientModelMapper<T extends BaseClientRepresentation> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public ClientModel toModel(BaseClientRepresentation rep, ClientModel existingModel) {
-        if (existingModel == null) {
-            existingModel = createClientModel(rep);
-        }
-
+    public ClientModel updateModel(BaseClientRepresentation rep, ClientModel existingModel) {
         existingModel.setEnabled(Boolean.TRUE.equals(rep.getEnabled()));
         existingModel.setClientId(rep.getClientId());
         existingModel.setDescription(rep.getDescription());
@@ -56,15 +53,6 @@ public abstract class BaseClientModelMapper<T extends BaseClientRepresentation> 
         toModelSpecific((T) rep, existingModel);
 
         return existingModel;
-    }
-
-    protected ClientModel createClientModel(BaseClientRepresentation rep) {
-        RealmModel realm = session.getContext().getRealm();
-
-        // dummy add/remove to obtain a detached model
-        var model = realm.addClient(rep.getClientId());
-        realm.removeClient(model.getId());
-        return model;
     }
 
     protected abstract T createClientRepresentation();
