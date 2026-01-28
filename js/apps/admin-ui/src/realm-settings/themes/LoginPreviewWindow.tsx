@@ -46,8 +46,8 @@ export const LoginPreviewWindow = ({ cssVars }: LoginPreviewWindowProps) => {
           /* Keycloak login theme variables - override with local/uploaded images */
           --keycloak-logo-url: url('${logoUrl}');
           --keycloak-bg-logo-url: url('${bgUrl}');
-          --keycloak-logo-height: ${logoHeight};
-          --keycloak-logo-width: ${logoWidth};
+          ${logoHeight ? `--keycloak-logo-height: ${logoHeight};` : ""}
+          ${logoWidth ? `--keycloak-logo-width: ${logoWidth};` : ""}
         }
 
         /* Apply background to #keycloak-bg */

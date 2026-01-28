@@ -8,13 +8,13 @@ import {
   InputGroup,
   InputGroupItem,
   PageSection,
-  Stack,
-  StackItem,
+  Tab,
+  Tabs,
   Text,
   TextContent,
   TextInputProps,
 } from "@patternfly/react-core";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FormProvider,
   useForm,
@@ -90,6 +90,7 @@ export const ThemeColors = ({ realm, save, theme }: ThemeColorsProps) => {
   const contextLogo = usePreviewLogo();
   const contextBackground = usePreviewBackground();
   const [open, toggle, setOpen] = useToggle();
+  const [previewTab, setPreviewTab] = useState(0);
 
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
   const mapping = useMemo(
@@ -221,11 +222,12 @@ export const ThemeColors = ({ realm, save, theme }: ThemeColorsProps) => {
             </FormAccess>
           </FlexItem>
           <FlexItem grow={{ default: "grow" }} style={{ zIndex: 0 }}>
-            <Stack hasGutter>
-              <StackItem>
-                <TextContent className="pf-v5-u-mb-sm">
-                  <Text component="h2">{t("loginPagePreview")}</Text>
-                </TextContent>
+            <Tabs
+              activeKey={previewTab}
+              isBox
+              onSelect={(_, index) => setPreviewTab(index as number)}
+            >
+              <Tab title={t("loginPagePreview")} eventKey={0}>
                 <LoginPreviewWindow
                   cssVars={{
                     ...(style?.[theme] || {}),
@@ -233,14 +235,11 @@ export const ThemeColors = ({ realm, save, theme }: ThemeColorsProps) => {
                     logoHeight: style?.["logoHeight"],
                   }}
                 />
-              </StackItem>
-              <StackItem>
-                <TextContent className="pf-v5-u-mb-sm">
-                  <Text component="h2">{t("adminConsolePreview")}</Text>
-                </TextContent>
+              </Tab>
+              <Tab title={t("adminConsolePreview")} eventKey={1}>
                 <PreviewWindow cssVars={style?.[theme] || {}} />
-              </StackItem>
-            </Stack>
+              </Tab>
+            </Tabs>
           </FlexItem>
         </Flex>
         <FixedButtonsGroup
