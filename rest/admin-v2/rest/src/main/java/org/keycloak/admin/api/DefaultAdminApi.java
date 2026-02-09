@@ -38,7 +38,7 @@ public class DefaultAdminApi implements AdminApi {
     @Override
     public ClientsApi clients(@PathParam("version") String version) {
         return switch (version) {
-            case "v2" -> new DefaultClientsApi(session, realmAdminResource);
+            case "v2" -> new DefaultClientsApi(session, realmAdminResource, auth);
             default -> throw new NotFoundException();
         };
     }

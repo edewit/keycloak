@@ -19,6 +19,7 @@ import org.keycloak.representations.admin.v2.validation.CreateClientDefault;
 import org.keycloak.services.ServiceException;
 import org.keycloak.services.client.ClientService;
 import org.keycloak.services.client.DefaultClientService;
+import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.ClientsResource;
 import org.keycloak.services.resources.admin.RealmAdminResource;
 import org.keycloak.validation.jakarta.HibernateValidatorProvider;
@@ -31,13 +32,15 @@ public class DefaultClientsApi implements ClientsApi {
     private final JakartaValidatorProvider validator;
     private final RealmAdminResource realmAdminResource;
     private final ClientsResource clientsResource;
+    private final AdminAuth auth;
 
-    public DefaultClientsApi(KeycloakSession session, RealmAdminResource realmAdminResource) {
+    public DefaultClientsApi(KeycloakSession session, RealmAdminResource realmAdminResource, AdminAuth auth) {
         this.session = session;
         this.realmAdminResource = realmAdminResource;
+        this.auth = auth;
 
         this.realm = Objects.requireNonNull(session.getContext().getRealm());
-        this.clientService = new DefaultClientService(session, realmAdminResource);
+        this.clientService = new DefaultClientService(session, realmAdminResource, auth);
         this.validator = new HibernateValidatorProvider();
         this.clientsResource = realmAdminResource.getClients();
     }
@@ -66,7 +69,7 @@ public class DefaultClientsApi implements ClientsApi {
     @Override
     public ClientApi client(@PathParam("id") String clientId) {
         var client = Optional.ofNullable(session.clients().getClientByClientId(realm, clientId));
-        return new DefaultClientApi(session, realmAdminResource, client.map(c -> clientsResource.getClient(c.getId())).orElse(null), clientId);
+        return new DefaultClientApi(session, realmAdminResource, client.map(c -> clientsResource.getClient(c.getId())).orElse(null), clientId, auth);
     }
 
 }

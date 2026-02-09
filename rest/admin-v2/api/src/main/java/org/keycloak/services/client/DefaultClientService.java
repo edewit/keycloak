@@ -10,6 +10,9 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 
+import org.keycloak.events.admin.OperationType;
+import org.keycloak.events.admin.ResourceType;
+import org.keycloak.events.admin.v2.AdminEventV2Builder;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -22,31 +25,40 @@ import org.keycloak.representations.admin.v2.validation.CreateClientDefault;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.services.ServiceException;
+import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.ClientResource;
 import org.keycloak.services.resources.admin.ClientsResource;
 import org.keycloak.services.resources.admin.RealmAdminResource;
 import org.keycloak.validation.jakarta.HibernateValidatorProvider;
 import org.keycloak.validation.jakarta.JakartaValidatorProvider;
 
-// TODO
+/**
+ * Default implementation of ClientService for Admin API v2.
+ */
 public class DefaultClientService implements ClientService {
     private final KeycloakSession session;
     private final JakartaValidatorProvider validator;
     private final RealmAdminResource realmAdminResource;
     private final ClientsResource clientsResource;
+    private final AdminEventV2Builder adminEventBuilder;
     private ClientResource clientResource;
 
-    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource, ClientResource clientResource) {
+    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource, ClientResource clientResource, AdminAuth auth) {
         this.session = session;
         this.realmAdminResource = realmAdminResource;
         this.clientResource = clientResource;
 
         this.clientsResource = realmAdminResource.getClients();
         this.validator = new HibernateValidatorProvider();
+
+        // Initialize the v2 event builder
+        RealmModel realm = session.getContext().getRealm();
+        this.adminEventBuilder = new AdminEventV2Builder(realm, auth, session, session.getContext().getConnection())
+                .resource(ResourceType.CLIENT);
     }
 
-    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource) {
-        this(session, realmAdminResource, null);
+    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource, AdminAuth auth) {
+        this(session, realmAdminResource, null, auth);
     }
 
     @Override
@@ -106,7 +118,25 @@ public class DefaultClientService implements ClientService {
         }
         var updated = mapper.fromModel(model);
 
+        // Fire v2 admin event (in parallel to v1 events fired by clientsResource/clientResource)
+        fireAdminEvent(created ? OperationType.CREATE : OperationType.UPDATE, model.getId(), updated);
+
         return new CreateOrUpdateResult(updated, created);
+    }
+
+    /**
+     * Fires a v2 admin event for client operations.
+     *
+     * @param operationType the type of operation (CREATE, UPDATE, DELETE)
+     * @param clientUuid the UUID of the client
+     * @param representation the v2 representation of the client
+     */
+    private void fireAdminEvent(OperationType operationType, String clientUuid, BaseClientRepresentation representation) {
+        adminEventBuilder
+                .operation(operationType)
+                .resourcePath("clients", clientUuid)
+                .representation(representation)
+                .success();
     }
 
     @Override
