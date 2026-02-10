@@ -27,7 +27,6 @@ import org.keycloak.representations.admin.v2.validation.CreateClientDefault;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.services.ServiceException;
-import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.ClientResource;
 import org.keycloak.services.resources.admin.ClientsResource;
 import org.keycloak.services.resources.admin.RealmAdminResource;
