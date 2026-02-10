@@ -25,10 +25,10 @@ import org.keycloak.representations.admin.v2.validation.CreateClientDefault;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.services.ServiceException;
-import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.ClientResource;
 import org.keycloak.services.resources.admin.ClientsResource;
 import org.keycloak.services.resources.admin.RealmAdminResource;
+import org.keycloak.services.resources.admin.fgap.AdminPermissionEvaluator;
 import org.keycloak.validation.jakarta.HibernateValidatorProvider;
 import org.keycloak.validation.jakarta.JakartaValidatorProvider;
 
@@ -43,7 +43,7 @@ public class DefaultClientService implements ClientService {
     private final AdminEventV2Builder adminEventBuilder;
     private ClientResource clientResource;
 
-    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource, ClientResource clientResource, AdminAuth auth) {
+    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource, ClientResource clientResource, AdminPermissionEvaluator auth) {
         this.session = session;
         this.realmAdminResource = realmAdminResource;
         this.clientResource = clientResource;
@@ -53,11 +53,11 @@ public class DefaultClientService implements ClientService {
 
         // Initialize the v2 event builder
         RealmModel realm = session.getContext().getRealm();
-        this.adminEventBuilder = new AdminEventV2Builder(realm, auth, session, session.getContext().getConnection())
+        this.adminEventBuilder = new AdminEventV2Builder(realm, auth.adminAuth(), session, session.getContext().getConnection())
                 .resource(ResourceType.CLIENT);
     }
 
-    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource, AdminAuth auth) {
+    public DefaultClientService(KeycloakSession session, RealmAdminResource realmAdminResource, AdminPermissionEvaluator auth) {
         this(session, realmAdminResource, null, auth);
     }
 

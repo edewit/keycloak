@@ -21,9 +21,9 @@ import org.keycloak.services.ErrorResponse;
 import org.keycloak.services.ServiceException;
 import org.keycloak.services.client.ClientService;
 import org.keycloak.services.client.DefaultClientService;
-import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.ClientResource;
 import org.keycloak.services.resources.admin.RealmAdminResource;
+import org.keycloak.services.resources.admin.fgap.AdminPermissionEvaluator;
 import org.keycloak.services.util.ObjectMapperResolver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,7 +43,7 @@ public class DefaultClientApi implements ClientApi {
 
     private static final ObjectMapper MAPPER = new ObjectMapperResolver().getContext(null);
 
-    public DefaultClientApi(KeycloakSession session, RealmAdminResource realmAdminResource, ClientResource clientResource, String clientId, AdminAuth auth) {
+    public DefaultClientApi(KeycloakSession session, RealmAdminResource realmAdminResource, ClientResource clientResource, String clientId, AdminPermissionEvaluator auth) {
         this.session = session;
         this.clientResource = clientResource;
         this.clientId = clientId;

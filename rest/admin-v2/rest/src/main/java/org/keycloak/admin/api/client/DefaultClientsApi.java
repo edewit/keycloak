@@ -19,9 +19,9 @@ import org.keycloak.representations.admin.v2.validation.CreateClientDefault;
 import org.keycloak.services.ServiceException;
 import org.keycloak.services.client.ClientService;
 import org.keycloak.services.client.DefaultClientService;
-import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.ClientsResource;
 import org.keycloak.services.resources.admin.RealmAdminResource;
+import org.keycloak.services.resources.admin.fgap.AdminPermissionEvaluator;
 import org.keycloak.validation.jakarta.HibernateValidatorProvider;
 import org.keycloak.validation.jakarta.JakartaValidatorProvider;
 
@@ -32,9 +32,9 @@ public class DefaultClientsApi implements ClientsApi {
     private final JakartaValidatorProvider validator;
     private final RealmAdminResource realmAdminResource;
     private final ClientsResource clientsResource;
-    private final AdminAuth auth;
+    private final AdminPermissionEvaluator auth;
 
-    public DefaultClientsApi(KeycloakSession session, RealmAdminResource realmAdminResource, AdminAuth auth) {
+    public DefaultClientsApi(KeycloakSession session, RealmAdminResource realmAdminResource, AdminPermissionEvaluator auth) {
         this.session = session;
         this.realmAdminResource = realmAdminResource;
         this.auth = auth;
