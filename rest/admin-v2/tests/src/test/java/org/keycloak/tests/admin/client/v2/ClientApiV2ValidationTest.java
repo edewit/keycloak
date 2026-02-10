@@ -39,6 +39,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -194,6 +195,7 @@ public class ClientApiV2ValidationTest {
             assertThat(body.error(), is("Provided data is invalid"));
             // Should have violations for the invalid URLs
             assertThat(body.violations().size(), greaterThanOrEqualTo(1));
+            assertThat(body.violations(), hasItem("redirectUris[].<iterable element>: Each redirect URL must be valid"));
         }
     }
 
@@ -218,6 +220,7 @@ public class ClientApiV2ValidationTest {
             var body = mapper.createParser(response.getEntity().getContent()).readValueAs(ViolationExceptionResponse.class);
             assertThat(body.error(), is("Provided data is invalid"));
             assertThat(body.violations().size(), greaterThanOrEqualTo(1));
+            assertThat(body.violations(), hasItem("redirectUris[].<iterable element>: Each redirect URL must be valid"));
         }
     }
 
@@ -246,6 +249,7 @@ public class ClientApiV2ValidationTest {
             var body = mapper.createParser(response.getEntity().getContent()).readValueAs(ViolationExceptionResponse.class);
             assertThat(body.error(), is("Provided data is invalid"));
             assertThat(body.violations().size(), greaterThanOrEqualTo(1));
+            assertThat(body.violations(), hasItem("roles[].<iterable element>: must not be blank"));
         }
     }
 
@@ -270,6 +274,7 @@ public class ClientApiV2ValidationTest {
             var body = mapper.createParser(response.getEntity().getContent()).readValueAs(ViolationExceptionResponse.class);
             assertThat(body.error(), is("Provided data is invalid"));
             assertThat(body.violations().size(), greaterThanOrEqualTo(1));
+            assertThat(body.violations(), hasItem("webOrigins[].<iterable element>: must not be blank"));
         }
     }
 
@@ -295,6 +300,7 @@ public class ClientApiV2ValidationTest {
             var body = mapper.createParser(response.getEntity().getContent()).readValueAs(ViolationExceptionResponse.class);
             assertThat(body.error(), is("Provided data is invalid"));
             assertThat(body.violations().size(), greaterThanOrEqualTo(1));
+            assertThat(body.violations(), hasItem("serviceAccountRoles[].<iterable element>: must not be blank"));
         }
     }
 
@@ -353,8 +359,9 @@ public class ClientApiV2ValidationTest {
 
             var body = mapper.createParser(response.getEntity().getContent()).readValueAs(ViolationExceptionResponse.class);
             assertThat(body.error(), is("Provided data is invalid"));
-            // Should have multiple violations (appUrl and redirectUris)
-            assertThat(body.violations().size(), greaterThanOrEqualTo(2));
+            // Should have violations for both appUrl and redirectUris
+            assertThat(body.violations(), hasItem("appUrl: must be a valid URL"));
+            assertThat(body.violations(), hasItem(containsString("Each redirect URL must be valid")));
         }
     }
 
