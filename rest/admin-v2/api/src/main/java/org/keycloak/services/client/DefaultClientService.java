@@ -154,7 +154,7 @@ public class DefaultClientService implements ClientService {
         // Fire v2 admin event (in parallel to v1 events fired by clientsResource/clientResource)
         fireAdminEvent(created ? OperationType.CREATE : OperationType.UPDATE, mapper.fromModel(model));
 
-return new CreateOrUpdateResult(updated, mapper.fromModel(model));
+        return new CreateOrUpdateResult(mapper.fromModel(model), created);
     }
 
     /**
