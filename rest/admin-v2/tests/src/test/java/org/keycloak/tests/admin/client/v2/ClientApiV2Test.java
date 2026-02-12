@@ -617,6 +617,138 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
         }
     }
 
+    @Test
+    public void createClientWithInvalidRedirectUriFragment() throws Exception {
+        // This test verifies that ValidationUtil.validateClient is called after the full model is populated
+        // Redirect URIs with fragments are not allowed
+        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        setAuthHeader(request);
+        request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+        OIDCClientRepresentation rep = new OIDCClientRepresentation();
+        rep.setEnabled(true);
+        rep.setClientId("client-invalid-fragment");
+        rep.setRedirectUris(Set.of("http://localhost:3000#fragment"));
+
+        request.setEntity(new StringEntity(mapper.writeValueAsString(rep)));
+
+        try (var response = client.execute(request)) {
+            assertThat(response.getStatusLine().getStatusCode(), is(400));
+            String body = EntityUtils.toString(response.getEntity());
+            assertThat(body, containsString("Redirect URIs must not contain an URI fragment"));
+        }
+    }
+
+    @Test
+    public void createClientWithInvalidRedirectUriScheme() throws Exception {
+        // This test verifies that ValidationUtil.validateClient is called after the full model is populated
+        // Redirect URIs with javascript: scheme are not allowed
+        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        setAuthHeader(request);
+        request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+        OIDCClientRepresentation rep = new OIDCClientRepresentation();
+        rep.setEnabled(true);
+        rep.setClientId("client-invalid-scheme");
+        rep.setRedirectUris(Set.of("javascript:alert(1)"));
+
+        request.setEntity(new StringEntity(mapper.writeValueAsString(rep)));
+
+        try (var response = client.execute(request)) {
+            assertThat(response.getStatusLine().getStatusCode(), is(400));
+            String body = EntityUtils.toString(response.getEntity());
+            assertThat(body, containsString("illegal scheme"));
+        }
+    }
+
+    @Test
+    public void createClientWithInvalidRootUrl() throws Exception {
+        // This test verifies that ValidationUtil.validateClient is called after the full model is populated
+        // Root URL with fragment is not allowed
+        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        setAuthHeader(request);
+        request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+        OIDCClientRepresentation rep = new OIDCClientRepresentation();
+        rep.setEnabled(true);
+        rep.setClientId("client-invalid-root-url");
+        rep.setAppUrl("http://localhost:3000#fragment");
+
+        request.setEntity(new StringEntity(mapper.writeValueAsString(rep)));
+
+        try (var response = client.execute(request)) {
+            assertThat(response.getStatusLine().getStatusCode(), is(400));
+            String body = EntityUtils.toString(response.getEntity());
+            assertThat(body, containsString("Root URL must not contain an URL fragment"));
+        }
+    }
+
+    @Test
+    public void createSamlClientWithInvalidRedirectUriFragment() throws Exception {
+        // This test verifies that ValidationUtil.validateClient is called for SAML clients
+        // Redirect URIs with fragments are not allowed
+        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        setAuthHeader(request);
+        request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+        SAMLClientRepresentation rep = new SAMLClientRepresentation();
+        rep.setEnabled(true);
+        rep.setClientId("saml-client-invalid-fragment");
+        rep.setRedirectUris(Set.of("http://localhost:3000#fragment"));
+
+        request.setEntity(new StringEntity(mapper.writeValueAsString(rep)));
+
+        try (var response = client.execute(request)) {
+            assertThat(response.getStatusLine().getStatusCode(), is(400));
+            String body = EntityUtils.toString(response.getEntity());
+            assertThat(body, containsString("Redirect URIs must not contain an URI fragment"));
+        }
+    }
+
+    @Test
+    public void createSamlClientWithInvalidRedirectUriScheme() throws Exception {
+        // This test verifies that ValidationUtil.validateClient is called for SAML clients
+        // Redirect URIs with javascript: scheme are not allowed
+        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        setAuthHeader(request);
+        request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+        SAMLClientRepresentation rep = new SAMLClientRepresentation();
+        rep.setEnabled(true);
+        rep.setClientId("saml-client-invalid-scheme");
+        rep.setRedirectUris(Set.of("javascript:alert(1)"));
+
+        request.setEntity(new StringEntity(mapper.writeValueAsString(rep)));
+
+        try (var response = client.execute(request)) {
+            assertThat(response.getStatusLine().getStatusCode(), is(400));
+            String body = EntityUtils.toString(response.getEntity());
+            assertThat(body, containsString("illegal scheme"));
+        }
+    }
+
+    @Test
+    public void createSamlClientWithInvalidRootUrl() throws Exception {
+        // This test verifies that ValidationUtil.validateClient is called for SAML clients
+        // Root URL with fragment is not allowed
+        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        setAuthHeader(request);
+        request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+        SAMLClientRepresentation rep = new SAMLClientRepresentation();
+        rep.setEnabled(true);
+        rep.setClientId("saml-client-invalid-root-url");
+        rep.setAppUrl("http://localhost:3000#fragment");
+
+        request.setEntity(new StringEntity(mapper.writeValueAsString(rep)));
+
+        try (var response = client.execute(request)) {
+            assertThat(response.getStatusLine().getStatusCode(), is(400));
+            String body = EntityUtils.toString(response.getEntity());
+            assertThat(body, containsString("Root URL must not contain an URL fragment"));
+        }
+    }
+
     private OIDCClientRepresentation getTestingFullClientRep() {
         var rep = new OIDCClientRepresentation();
         rep.setClientId("my-client");
