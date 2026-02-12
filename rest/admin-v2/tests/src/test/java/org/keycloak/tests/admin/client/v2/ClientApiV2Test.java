@@ -621,7 +621,7 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
     public void createClientWithInvalidRedirectUriFragment() throws Exception {
         // This test verifies that ValidationUtil.validateClient is called after the full model is populated
         // Redirect URIs with fragments are not allowed
-        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        HttpPost request = new HttpPost(getClientsApiUrl());
         setAuthHeader(request);
         request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
@@ -643,7 +643,7 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
     public void createClientWithInvalidRedirectUriScheme() throws Exception {
         // This test verifies that ValidationUtil.validateClient is called after the full model is populated
         // Redirect URIs with javascript: scheme are not allowed
-        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        HttpPost request = new HttpPost(getClientsApiUrl());
         setAuthHeader(request);
         request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
@@ -665,7 +665,7 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
     public void createClientWithInvalidRootUrl() throws Exception {
         // This test verifies that ValidationUtil.validateClient is called after the full model is populated
         // Root URL with fragment is not allowed
-        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        HttpPost request = new HttpPost(getClientsApiUrl());
         setAuthHeader(request);
         request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
@@ -687,7 +687,7 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
     public void createSamlClientWithInvalidRedirectUriFragment() throws Exception {
         // This test verifies that ValidationUtil.validateClient is called for SAML clients
         // Redirect URIs with fragments are not allowed
-        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        HttpPost request = new HttpPost(getClientsApiUrl());
         setAuthHeader(request);
         request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
@@ -709,7 +709,7 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
     public void createSamlClientWithInvalidRedirectUriScheme() throws Exception {
         // This test verifies that ValidationUtil.validateClient is called for SAML clients
         // Redirect URIs with javascript: scheme are not allowed
-        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        HttpPost request = new HttpPost(getClientsApiUrl());
         setAuthHeader(request);
         request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
@@ -731,7 +731,7 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
     public void createSamlClientWithInvalidRootUrl() throws Exception {
         // This test verifies that ValidationUtil.validateClient is called for SAML clients
         // Root URL with fragment is not allowed
-        HttpPost request = new HttpPost(HOSTNAME_LOCAL_ADMIN);
+        HttpPost request = new HttpPost(getClientsApiUrl());
         setAuthHeader(request);
         request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
