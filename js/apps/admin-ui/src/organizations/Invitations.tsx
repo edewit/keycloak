@@ -1,6 +1,6 @@
 import type { OrganizationInvitationRepresentation } from "@keycloak/keycloak-admin-client";
 import { OrganizationInvitationStatus } from "@keycloak/keycloak-admin-client";
-import { Button, Chip, ToolbarItem } from "@patternfly/react-core";
+import { Button, Label, ToolbarItem } from "@patternfly/react-core";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAdminClient } from "../admin-client";
@@ -24,9 +24,9 @@ const InvitationStatusBadge = ({
   const { t } = useTranslation();
 
   return (
-    <Chip isReadOnly>
+    <Label readOnly>
       {status ? t(`organizationInvitationStatus.${status.toLowerCase()}`) : ""}
-    </Chip>
+    </Label>
   );
 };
 
@@ -193,12 +193,11 @@ export const Invitations = () => {
             </ToolbarItem>
             <ToolbarItem>
               <Button
+                icon={t("deleteInvitations")}
                 variant="plain"
                 isDisabled={selectedInvitations.length === 0}
                 onClick={toggleDeleteDialog}
-              >
-                {t("deleteInvitations")}
-              </Button>
+              />
             </ToolbarItem>
             <ToolbarItem>
               <CheckboxFilterComponent

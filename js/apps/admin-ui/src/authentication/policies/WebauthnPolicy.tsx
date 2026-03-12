@@ -7,8 +7,7 @@ import {
   FormGroup,
   PageSection,
   Popover,
-  Text,
-  TextContent,
+  Content,
 } from "@patternfly/react-core";
 import { QuestionCircleIcon } from "@patternfly/react-icons";
 import { useEffect } from "react";
@@ -145,14 +144,14 @@ export const WebauthnPolicy = ({
   const isFeatureEnabled = useIsFeatureEnabled();
 
   return (
-    <PageSection variant="light">
+    <PageSection hasBodyWrapper={false}>
       {enabled && (
         <Popover bodyContent={t(`${namePrefix}FormHelp`)}>
-          <TextContent className="keycloak__section_intro__help">
-            <Text>
+          <Content className="keycloak__section_intro__help">
+            <Content component="p">
               <QuestionCircleIcon /> {t("webauthnIntro")}
-            </Text>
-          </TextContent>
+            </Content>
+          </Content>
         </Popover>
       )}
 
@@ -230,12 +229,11 @@ export const WebauthnPolicy = ({
             label={t("webAuthnPolicyAvoidSameAuthenticatorRegister")}
             labelIcon={t("webAuthnPolicyAvoidSameAuthenticatorRegisterHelp")}
             labelOn={t("on")}
-            labelOff={t("off")}
           />
           <FormGroup
             label={t("webAuthnPolicyAcceptableAaguids")}
             fieldId="webAuthnPolicyAcceptableAaguids"
-            labelIcon={
+            labelHelp={
               <HelpItem
                 helpText={t("webAuthnPolicyAcceptableAaguidsHelp")}
                 fieldLabelId="webAuthnPolicyAcceptableAaguids"
@@ -251,7 +249,7 @@ export const WebauthnPolicy = ({
           <FormGroup
             label={t("webAuthnPolicyExtraOrigins")}
             fieldId="webAuthnPolicyExtraOrigins"
-            labelIcon={
+            labelHelp={
               <HelpItem
                 helpText={t("webAuthnPolicyExtraOriginsHelp")}
                 fieldLabelId="webAuthnPolicyExtraOrigins"
@@ -270,7 +268,6 @@ export const WebauthnPolicy = ({
               label={t("webAuthnPolicyPasskeysEnabled")}
               labelIcon={t("webAuthnPolicyPasskeysEnabledHelp")}
               labelOn={t("on")}
-              labelOff={t("off")}
             />
           )}
         </FormProvider>

@@ -155,7 +155,7 @@ const RealmSettingsHeader = ({
           </DropdownItem>,
         ]}
         isEnabled={value}
-        isReadOnly={!canManageRealm}
+        readOnly={!canManageRealm}
         onToggle={(value) => {
           if (!value) {
             toggleDisableDialog();
@@ -329,7 +329,7 @@ export const RealmSettingsTabs = () => {
           />
         )}
       />
-      <PageSection variant="light" className="pf-v5-u-p-0">
+      <PageSection hasBodyWrapper={false} className="pf-v6-u-p-0">
         <RoutableTabs
           isBox
           mountOnEnter

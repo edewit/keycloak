@@ -11,10 +11,10 @@ import {
 import { useRealm } from "../../context/realm-context/RealmContext";
 import useIsFeatureEnabled, { Feature } from "../../utils/useIsFeatureEnabled";
 import { ThemesTabType, toThemesTab } from "../routes/ThemesTab";
+import { BackgroundContext } from "./BackgroundContext";
 import { LogoContext } from "./LogoContext";
 import { ThemeColors } from "./ThemeColors";
 import { ThemeSettingsTab } from "./ThemeSettings";
-import { BackgroundContext } from "./BackgroundContext";
 
 type ThemesTabProps = {
   realm: RealmRepresentation;
@@ -126,7 +126,7 @@ styles=css/styles.css css/theme-styles.css
 
     const toCss = (obj?: object) =>
       Object.entries(obj || {})
-        .map(([key, value]) => `--pf-v5-global--${key}: ${value};`)
+        .map(([key, value]) => `--pf-v6-global--${key}: ${value};`)
         .join("\n");
 
     const loginCss = (
@@ -145,7 +145,7 @@ styles=css/styles.css css/theme-styles.css
         --keycloak-logo-width: ${realm.logoWidth};
         ${toCss(styles.light)}
       }
-      .pf-v5-theme-dark {
+      .pf-v6-theme-dark {
         ${toCss(styles.dark)}
       }
       `,
@@ -168,7 +168,9 @@ styles=css/styles.css css/theme-styles.css
   const settingsTab = useRoutableTab(toThemesTab(param("settings")));
   const quickThemeTab = useRoutableTab(toThemesTab(param("quickTheme")));
 
-  if (!isFeatureEnabled(Feature.QuickTheme)) {
+  const hasQuickTheme = isFeatureEnabled(Feature.QuickTheme);
+
+  if (!hasQuickTheme) {
     return <ThemeSettingsTab realm={realm} save={save} />;
   }
 
@@ -189,18 +191,20 @@ styles=css/styles.css css/theme-styles.css
       >
         <ThemeSettingsTab realm={realm} save={save} />
       </Tab>
-      <Tab
-        id="quickTheme"
-        title={<TabTitleText>{t("quickTheme")}</TabTitleText>}
-        data-testid="quickTheme-tab"
-        {...quickThemeTab}
-      >
-        <BackgroundContext>
-          <LogoContext>
-            <ThemeColors realm={realm} save={saveTheme} />
-          </LogoContext>
-        </BackgroundContext>
-      </Tab>
+      {hasQuickTheme && (
+        <Tab
+          id="quickTheme"
+          title={<TabTitleText>{t("quickTheme")}</TabTitleText>}
+          data-testid="quickTheme-tab"
+          {...quickThemeTab}
+        >
+          <BackgroundContext>
+            <LogoContext>
+              <ThemeColors realm={realm} save={saveTheme} />
+            </LogoContext>
+          </BackgroundContext>
+        </Tab>
+      )}
     </RoutableTabs>
   );
 }
