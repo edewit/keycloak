@@ -421,9 +421,9 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
 
     @Test
     public void getClientsSortByMultipleFields() {
-        createSortTestClient("sort-b", "B", "beta");
-        createSortTestClient("sort-a", "A", "alpha");
-        createSortTestClient("sort-c", "A", "gamma");
+        createSortTestClient("sort-b", "B", "beta", 1000L);
+        createSortTestClient("sort-a", "A", "alpha", 2000L);
+        createSortTestClient("sort-c", "A", "gamma", 3000L);
 
         ListOptions listOptions = new ListOptions();
         listOptions.setFields(Set.of("clientId", "displayName"));
@@ -439,10 +439,28 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
     }
 
     @Test
+    public void getClientsSortByTime() {
+        createSortTestClient("sort-b", "B", "beta", 1000L);
+        createSortTestClient("sort-a", "A", "alpha", 3000L);
+        createSortTestClient("sort-c", "C", "gamma", 8000L);
+
+        ListOptions listOptions = new ListOptions();
+        listOptions.setFields(Set.of("clientId"));
+        listOptions.setSort(List.of(SortOption.of(ClientField.CREATED_TIMESTAMP) ));
+
+        try (Stream<BaseClientRepresentation> clients = getClientsApi().getClients(listOptions)) {
+            List<String> sortTestClientIds = clients
+                    .map(BaseClientRepresentation::getClientId)
+                    .filter(id -> id.startsWith("sort-"))
+                    .toList();
+            assertThat(sortTestClientIds, is(List.of("sort-b", "sort-a", "sort-c")));
+        }
+    }
+    @Test
     public void getClientsSortByMultipleFieldsDesc() {
-        createSortTestClient("sort-b", "B", "beta");
-        createSortTestClient("sort-a", "A", "alpha");
-        createSortTestClient("sort-c", "A", "gamma");
+        createSortTestClient("sort-b", "B", "beta", 4000L);
+        createSortTestClient("sort-a", "A", "alpha", 2000L);
+        createSortTestClient("sort-c", "A", "gamma", 3000L);
 
         ListOptions listOptions = new ListOptions();
         listOptions.setFields(Set.of("clientId", "displayName"));
@@ -471,9 +489,9 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
 
     @Test
     public void getClientsSortByMultipleFieldsViaHttp() throws IOException {
-        createSortTestClient("sort-b", "B", "beta");
-        createSortTestClient("sort-a", "A", "alpha");
-        createSortTestClient("sort-c", "A", "gamma");
+        createSortTestClient("sort-b", "B", "beta", 4000L);
+        createSortTestClient("sort-a", "A", "alpha", 2000L);
+        createSortTestClient("sort-c", "A", "gamma", 3000L);
 
         HttpGet request = new HttpGet(getClientsApiUrl() + "?fields=clientId,displayName&sort=displayName,clientId");
         setAuthHeader(request);
@@ -503,12 +521,13 @@ public class ClientApiV2Test extends AbstractClientApiV2Test{
         }
     }
 
-    private void createSortTestClient(String clientId, String displayName, String description) {
+    private void createSortTestClient(String clientId, String displayName, String description, Long createdTimestamp) {
         OIDCClientRepresentation rep = new OIDCClientRepresentation();
         rep.setEnabled(true);
         rep.setClientId(clientId);
         rep.setDisplayName(displayName);
         rep.setDescription(description);
+        rep.setCreatedTimestamp(createdTimestamp);
         try (var response = getClientsApi().createClient(rep)) {
             assertEquals(201, response.getStatus());
             BaseClientRepresentation created = response.readEntity(BaseClientRepresentation.class);
