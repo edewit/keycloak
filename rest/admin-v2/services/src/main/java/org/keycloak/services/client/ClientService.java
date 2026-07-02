@@ -62,10 +62,11 @@ public interface ClientService extends Service {
             List<SortOption> options;
             int normalizedOffset;
             int normalizedLimit;
+            var sort = listOptions.getSort();
             try {
-                options = listOptions.getSort() == null || listOptions.getSort().isEmpty()
+                options = sort == null || sort.isEmpty()
                         ? List.of(SortOption.of(ClientField.defaultField()))
-                        : listOptions.getSort();
+                        : sort;
 
                 Integer offset = listOptions.getOffset();
                 Integer limit = listOptions.getLimit();
