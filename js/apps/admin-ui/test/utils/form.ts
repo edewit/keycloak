@@ -135,15 +135,39 @@ async function setSwitchState(switchElement: Locator, checked: boolean) {
       return;
     }
 
-    await clickSwitchElement(switchElement);
-
     try {
-      await expect
-        .poll(async () => await switchElement.isChecked(), { timeout: 2_000 })
-        .toBe(checked);
+      if (checked) {
+        await switchElement.check({ force: true, timeout: 3_000 });
+      } else {
+        await switchElement.uncheck({ force: true, timeout: 3_000 });
+      }
+    } catch (error) {
+      if (isPageClosedError(error)) {
+        throw error;
+      }
+    }
+
+    if (await waitForSwitchState(switchElement, checked)) {
       return;
-    } catch {
-      // Retry for transient UI states before failing.
+    }
+
+    await clickSwitchElement(switchElement);
+    if (await waitForSwitchState(switchElement, checked)) {
+      return;
+    }
+
+    // Some switches only respond to keyboard interactions after focus.
+    try {
+      await switchElement.focus({ timeout: 2_000 });
+      await switchElement.page().keyboard.press("Space");
+    } catch (error) {
+      if (isPageClosedError(error)) {
+        throw error;
+      }
+    }
+
+    if (await waitForSwitchState(switchElement, checked)) {
+      return;
     }
   }
 
@@ -151,6 +175,17 @@ async function setSwitchState(switchElement: Locator, checked: boolean) {
     await expect(switchElement).toBeChecked();
   } else {
     await expect(switchElement).not.toBeChecked();
+  }
+}
+
+async function waitForSwitchState(switchElement: Locator, checked: boolean) {
+  try {
+    await expect
+      .poll(async () => await switchElement.isChecked(), { timeout: 2_000 })
+      .toBe(checked);
+    return true;
+  } catch {
+    return false;
   }
 }
 
