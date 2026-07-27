@@ -1,6 +1,13 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { clickSelectRow } from "./table.ts";
 
+function isPageClosedError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /Target page, context or browser has been closed/i.test(error.message)
+  );
+}
+
 export async function assertRequiredFieldError(page: Page, field: string) {
   await expect(page.getByTestId(field + "-helper")).toHaveText(/required/i);
 }
@@ -24,10 +31,7 @@ export async function selectItem(
   try {
     await element.click({ timeout: 3_000 });
   } catch (error) {
-    if (
-      error instanceof Error &&
-      /Target page, context or browser has been closed/i.test(error.message)
-    ) {
+    if (isPageClosedError(error)) {
       throw error;
     }
     await element.click({ force: true, timeout: 3_000 });
@@ -87,73 +91,45 @@ async function clickOption(page: Page, option: string) {
   await page.getByRole("option", { name: option }).click();
 }
 
-async function clickSwitch(switchElement: Locator) {
-  await expect(switchElement).toBeVisible();
-  await expect(switchElement).toBeEnabled();
-  try {
-    await switchElement.click({ timeout: 3_000 });
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      /Target page, context or browser has been closed/i.test(error.message)
-    ) {
-      throw error;
-    }
-    // Fallback for transient overlays/animations while preserving deterministic state checks.
-    await switchElement.click({ force: true, timeout: 3_000 });
-  }
-}
-
 async function setSwitchState(switchElement: Locator, checked: boolean) {
-  await expect(switchElement).toBeVisible();
-  await expect(switchElement).toBeEnabled();
-
   for (let attempt = 0; attempt < 3; attempt++) {
+    await expect(switchElement).toBeVisible();
+
     if ((await switchElement.isChecked()) === checked) {
       return;
     }
 
     try {
       if (checked) {
-        await switchElement.check({ timeout: 3_000 });
+        await switchElement.check({ force: true, timeout: 3_000 });
       } else {
-        await switchElement.uncheck({ timeout: 3_000 });
+        await switchElement.uncheck({ force: true, timeout: 3_000 });
       }
     } catch (error) {
-      if (
-        error instanceof Error &&
-        /Target page, context or browser has been closed/i.test(error.message)
-      ) {
+      if (isPageClosedError(error)) {
         throw error;
       }
-      await clickSwitch(switchElement);
+
+      // Fall back to clicking label/element directly for transient interaction issues.
+      const switchId = await switchElement.getAttribute("id");
+      const label = switchId
+        ? switchElement.page().locator(`label[for="${switchId}"]`).first()
+        : undefined;
+
+      if (label && (await label.count()) > 0) {
+        await label.click({ force: true, timeout: 3_000 });
+      } else {
+        await switchElement.click({ force: true, timeout: 3_000 });
+      }
     }
 
     try {
       await expect
-        .poll(async () => await switchElement.isChecked(), { timeout: 1_000 })
+        .poll(async () => await switchElement.isChecked(), { timeout: 2_000 })
         .toBe(checked);
       return;
     } catch {
-      // Retry a few times for transient UI states before failing.
-    }
-
-    const switchId = await switchElement.getAttribute("id");
-    if (switchId) {
-      const label = switchElement.page().locator(`label[for="${switchId}"]`);
-      if ((await label.count()) > 0) {
-        try {
-          await label.first().click({ timeout: 3_000 });
-          await expect
-            .poll(async () => await switchElement.isChecked(), {
-              timeout: 1_000,
-            })
-            .toBe(checked);
-          return;
-        } catch {
-          // Continue to next retry if label click did not stabilize state.
-        }
-      }
+      // Retry for transient UI states before failing.
     }
   }
 

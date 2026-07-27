@@ -197,8 +197,8 @@ test.describe("Authentication flow details", () => {
     await clickTableRowItem(page, flowName);
     const moved = await dragExecutionAboveExecution(
       page,
-      "execution Identity Provider Redirector",
-      "execution Kerberos",
+      "Identity Provider Redirector",
+      "Kerberos",
     );
 
     expect(moved).toBe(true);

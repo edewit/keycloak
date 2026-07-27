@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test";
+import { switchToggle } from "../utils/form.ts";
 
 export async function goToLoginTab(page: Page) {
   await page.getByTestId("rs-login-tab").click();
@@ -14,7 +15,7 @@ export async function toggleLoginSettingAndExpectSuccess(
     await expect(previousAlert).toBeHidden();
   }
 
-  await page.getByTestId(switchTestId).click();
+  await switchToggle(page, page.getByTestId(switchTestId));
   await expect(page.getByTestId("last-alert")).toContainText(
     /changed successfully/i,
   );

@@ -14,61 +14,53 @@ export async function clearAllFilters(page: Page) {
   await page.getByTestId("clear-all-filters-empty-action").click();
 }
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export async function clickTableRowItem(page: Page, itemName: string) {
-  const rows = page.locator("table tbody tr");
-  const exactRow = rows
-    .filter({ has: page.getByText(itemName, { exact: true }) })
+  const tableBody = page.locator("table tbody");
+  await tableBody.waitFor();
+
+  const exactNameRegex = new RegExp(`^${escapeRegex(itemName)}$`, "i");
+  const exactTableLink = tableBody
+    .getByRole("link", { name: itemName, exact: true })
     .first();
 
-  if ((await exactRow.count()) > 0) {
-    const exactRowLink = exactRow.getByRole("link", {
-      name: itemName,
-      exact: true,
-    });
-    if ((await exactRowLink.count()) > 0) {
-      await exactRowLink.first().click();
-      return;
-    }
-
-    const firstExactRowLink = exactRow.getByRole("link").first();
-    if ((await firstExactRowLink.count()) > 0) {
-      await firstExactRowLink.click();
-      return;
-    }
-  }
-
-  const partialRow = rows.filter({ hasText: itemName }).first();
-
-  if ((await partialRow.count()) > 0) {
-    const exactRowLink = partialRow.getByRole("link", {
-      name: itemName,
-      exact: true,
-    });
-    if ((await exactRowLink.count()) > 0) {
-      await exactRowLink.first().click();
-      return;
-    }
-
-    const partialRowLink = partialRow.getByRole("link", { name: itemName });
-    if ((await partialRowLink.count()) > 0) {
-      await partialRowLink.first().click();
-      return;
-    }
-
-    const firstRowLink = partialRow.getByRole("link").first();
-    if ((await firstRowLink.count()) > 0) {
-      await firstRowLink.click();
-      return;
-    }
-  }
-
-  const exactLink = page.getByRole("link", { name: itemName, exact: true });
-  if ((await exactLink.count()) > 0) {
-    await exactLink.first().click();
+  if ((await exactTableLink.count()) > 0) {
+    await exactTableLink.click();
     return;
   }
 
-  await page.getByRole("link", { name: itemName }).first().click();
+  const normalizedExactTableLink = tableBody
+    .getByRole("link", { name: exactNameRegex })
+    .first();
+  if ((await normalizedExactTableLink.count()) > 0) {
+    await normalizedExactTableLink.click();
+    return;
+  }
+
+  const rowWithMatchingLink = tableBody
+    .locator("tr")
+    .filter({ has: page.getByRole("link", { name: exactNameRegex }) })
+    .first();
+  if ((await rowWithMatchingLink.count()) > 0) {
+    await rowWithMatchingLink
+      .getByRole("link", { name: exactNameRegex })
+      .first()
+      .click();
+    return;
+  }
+
+  const looseTableLink = tableBody
+    .getByRole("link", { name: itemName })
+    .first();
+  if ((await looseTableLink.count()) > 0) {
+    await looseTableLink.click();
+    return;
+  }
+
+  throw new Error(`Table row item "${itemName}" not found`);
 }
 
 export function getRowByCellText(page: Page, cellText: string): Locator {
@@ -225,8 +217,18 @@ export async function clickSelectRow(
   row: number | string,
 ) {
   if (typeof row === "string") {
-    const rows = await getTableData(page, tableName);
-    const rowIndex = rows.findIndex((r) => r.includes(row as string));
+    let rows: string[][] = [];
+    let rowIndex = -1;
+
+    for (let attempt = 0; attempt < 6; attempt++) {
+      rows = await getTableData(page, tableName);
+      rowIndex = rows.findIndex((r) => r.includes(row as string));
+      if (rowIndex !== -1) {
+        break;
+      }
+      await page.waitForTimeout(250);
+    }
+
     if (rowIndex === -1) {
       throw new Error(`Row ${row} not found: ${rows}`);
     }

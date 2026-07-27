@@ -1,4 +1,4 @@
-import { type Page, expect } from "@playwright/test";
+import { type Locator, type Page, expect } from "@playwright/test";
 import { selectItem } from "../utils/form.ts";
 import { confirmModal } from "../utils/modal.ts";
 
@@ -160,14 +160,15 @@ export async function dragExecutionAboveExecution(
     .getByRole("row")
     .filter({ hasText: targetExecution })
     .first();
-  const sourceHandle = sourceRow.getByRole("button", {
-    name: "Drag handle",
-    exact: true,
-  });
-  const targetHandle = targetRow.getByRole("button", {
-    name: "Drag handle",
-    exact: true,
-  });
+  const getDragHandle = (row: Locator) =>
+    row.getByRole("button", { name: /draggable row/i }).first();
+  const sourceHandle = getDragHandle(sourceRow);
+  const targetHandle = getDragHandle(targetRow);
+
+  await expect(sourceRow).toBeVisible({ timeout: 5_000 });
+  await expect(targetRow).toBeVisible({ timeout: 5_000 });
+  await expect(sourceHandle).toBeVisible({ timeout: 5_000 });
+  await expect(targetHandle).toBeVisible({ timeout: 5_000 });
 
   const hasMoved = async () => {
     const rows = await treeGrid.getByRole("row").allInnerTexts();
@@ -216,11 +217,15 @@ export async function dragExecutionAboveExecution(
   }
 
   if (!moved) {
-    await sourceHandle.focus();
-    await page.keyboard.press("Space");
-    await page.keyboard.press("ArrowUp");
-    await page.keyboard.press("Space");
-    moved = await waitForMove();
+    try {
+      await sourceHandle.focus({ timeout: 2_000 });
+      await page.keyboard.press("Space");
+      await page.keyboard.press("ArrowUp");
+      await page.keyboard.press("Space");
+      moved = await waitForMove();
+    } catch {
+      // Keep "moved" false and let the caller assert/fail with context.
+    }
   }
 
   return moved;
