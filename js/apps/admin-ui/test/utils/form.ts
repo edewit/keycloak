@@ -59,6 +59,11 @@ export async function switchToggle(page: Page, id: string | Locator) {
   await setSwitchState(switchElement, !(await switchElement.isChecked()));
 }
 
+export async function clickSwitch(page: Page, id: string | Locator) {
+  const switchElement = typeof id === "string" ? page.locator(id) : id;
+  await clickSwitchElement(switchElement);
+}
+
 export async function assertSwitchIsChecked(
   page: Page,
   id: string,
@@ -91,6 +96,37 @@ async function clickOption(page: Page, option: string) {
   await page.getByRole("option", { name: option }).click();
 }
 
+async function clickSwitchElement(switchElement: Locator) {
+  await expect(switchElement).toBeVisible();
+
+  const switchId = await switchElement.getAttribute("id");
+  const label = switchId
+    ? switchElement.page().locator(`label[for="${switchId}"]`).first()
+    : undefined;
+
+  try {
+    await switchElement.click({ timeout: 3_000 });
+    return;
+  } catch (error) {
+    if (isPageClosedError(error)) {
+      throw error;
+    }
+  }
+
+  if (label && (await label.count()) > 0) {
+    try {
+      await label.click({ force: true, timeout: 3_000 });
+      return;
+    } catch (error) {
+      if (isPageClosedError(error)) {
+        throw error;
+      }
+    }
+  }
+
+  await switchElement.click({ force: true, timeout: 3_000 });
+}
+
 async function setSwitchState(switchElement: Locator, checked: boolean) {
   for (let attempt = 0; attempt < 3; attempt++) {
     await expect(switchElement).toBeVisible();
@@ -110,16 +146,9 @@ async function setSwitchState(switchElement: Locator, checked: boolean) {
         throw error;
       }
 
-      // Fall back to clicking label/element directly for transient interaction issues.
-      const switchId = await switchElement.getAttribute("id");
-      const label = switchId
-        ? switchElement.page().locator(`label[for="${switchId}"]`).first()
-        : undefined;
-
-      if (label && (await label.count()) > 0) {
-        await label.click({ force: true, timeout: 3_000 });
-      } else {
-        await switchElement.click({ force: true, timeout: 3_000 });
+      // check()/uncheck() can throw after dispatching the change on rerender.
+      if ((await switchElement.isChecked()) !== checked) {
+        await clickSwitchElement(switchElement);
       }
     }
 

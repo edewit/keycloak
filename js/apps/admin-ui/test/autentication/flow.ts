@@ -169,6 +169,8 @@ export async function dragExecutionAboveExecution(
   await expect(targetRow).toBeVisible({ timeout: 5_000 });
   await expect(sourceHandle).toBeVisible({ timeout: 5_000 });
   await expect(targetHandle).toBeVisible({ timeout: 5_000 });
+  await sourceHandle.scrollIntoViewIfNeeded();
+  await targetHandle.scrollIntoViewIfNeeded();
 
   const hasMoved = async () => {
     const rows = await treeGrid.getByRole("row").allInnerTexts();
@@ -197,8 +199,10 @@ export async function dragExecutionAboveExecution(
   let moved = await waitForMove();
 
   if (!moved) {
-    const sourceBox = await sourceRow.boundingBox();
-    const targetBox = await targetRow.boundingBox();
+    const sourceBox =
+      (await sourceHandle.boundingBox()) ?? (await sourceRow.boundingBox());
+    const targetBox =
+      (await targetHandle.boundingBox()) ?? (await targetRow.boundingBox());
 
     if (sourceBox && targetBox) {
       await page.mouse.move(
@@ -220,7 +224,20 @@ export async function dragExecutionAboveExecution(
     try {
       await sourceHandle.focus({ timeout: 2_000 });
       await page.keyboard.press("Space");
-      await page.keyboard.press("ArrowUp");
+      const rows = await treeGrid.getByRole("row").allInnerTexts();
+      const sourceIndex = rows.findIndex((row) =>
+        row.includes(sourceExecution),
+      );
+      const targetIndex = rows.findIndex((row) =>
+        row.includes(targetExecution),
+      );
+      const steps =
+        sourceIndex !== -1 && targetIndex !== -1 && sourceIndex > targetIndex
+          ? sourceIndex - targetIndex
+          : 1;
+      for (let step = 0; step < steps; step++) {
+        await page.keyboard.press("ArrowUp");
+      }
       await page.keyboard.press("Space");
       moved = await waitForMove();
     } catch {

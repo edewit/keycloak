@@ -1,6 +1,7 @@
 import { type Locator, type Page, expect } from "@playwright/test";
 import {
   assertSelectValue,
+  clickSwitch,
   selectItem,
   switchOff,
   switchOn,
@@ -77,7 +78,7 @@ export async function goToClientSettingsTab(page: Page) {
 }
 
 export async function clickClientSignature(page: Page) {
-  await switchOff(page, "#clientSignature");
+  await clickSwitch(page, "#clientSignature");
 }
 
 // Assert that the number of certificates enabled matches the number of certificates displayed

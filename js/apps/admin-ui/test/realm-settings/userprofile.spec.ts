@@ -15,6 +15,7 @@ import { goToLoginTab } from "./login.ts";
 import {
   clickAddValidator,
   clickCancelAttribute,
+  clickCreateUser,
   clickCreateAttribute,
   fillEmailAndOptionalUsername,
   clickSaveAttribute,
@@ -61,6 +62,7 @@ test.describe.serial("User profile tabs", () => {
 
   test.afterEach(async () => {
     await adminClient.deleteUser("testuser7", realmName, true);
+    await adminClient.deleteUser("testuser8@gmail.com", realmName, true);
     await adminClient.deleteUser("testuser9@gmail.com", realmName, true);
     await adminClient.deleteUser("testuser10", realmName, true);
     await adminClient.deleteUser("testuser11", realmName, true);
@@ -147,7 +149,7 @@ test.describe.serial("User profile tabs", () => {
     await switchOn(page, "#kc-edit-username-switch");
 
     await goToUsers(page);
-    await page.getByTestId("no-users-found-empty-action").click();
+    await clickCreateUser(page);
     await expect(page.getByTestId(attrName)).toBeHidden();
     await page.getByTestId("username").fill("testuser7");
     await page.getByTestId("user-creation-save").click();
@@ -169,7 +171,7 @@ test.describe.serial("User profile tabs", () => {
     await switchOn(page, "#kc-email-as-username-switch");
 
     await goToUsers(page);
-    await page.getByTestId("no-users-found-empty-action").click();
+    await clickCreateUser(page);
     await fillEmailAndOptionalUsername(
       page,
       "testuser8@gmail.com",
@@ -201,7 +203,7 @@ test.describe.serial("User profile tabs", () => {
     await switchOffIfOn(page, "#kc-email-as-username-switch");
 
     await goToUsers(page);
-    await page.getByTestId("no-users-found-empty-action").click();
+    await clickCreateUser(page);
     await expect(page.getByTestId(attrName)).toBeVisible();
     await page.getByTestId("username").fill("testuser10");
     await page.getByTestId("user-creation-save").click();
@@ -226,7 +228,7 @@ test.describe.serial("User profile tabs", () => {
     await clickSaveAttribute(page);
 
     await goToUsers(page);
-    await page.getByTestId("no-users-found-empty-action").click();
+    await clickCreateUser(page);
     await expect(page.getByTestId(attrName)).toBeVisible();
     await page.getByTestId("username").fill("testuser11");
     await page.getByTestId("user-creation-save").click();
@@ -260,7 +262,7 @@ test.describe.serial("User profile tabs", () => {
     );
 
     await goToUsers(page);
-    await page.getByTestId("no-users-found-empty-action").click();
+    await clickCreateUser(page);
 
     await expect(page.getByRole("heading", { name: group })).toBeVisible();
   });

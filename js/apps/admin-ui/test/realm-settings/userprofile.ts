@@ -52,6 +52,16 @@ export async function switchOffIfOn(page: Page, selector: string) {
   }
 }
 
+export async function clickCreateUser(page: Page) {
+  const emptyAction = page.getByTestId("no-users-found-empty-action");
+  if ((await emptyAction.count()) > 0 && (await emptyAction.isVisible())) {
+    await emptyAction.click();
+    return;
+  }
+
+  await page.getByTestId("add-user").click();
+}
+
 export async function fillEmailAndOptionalUsername(
   page: Page,
   email: string,
