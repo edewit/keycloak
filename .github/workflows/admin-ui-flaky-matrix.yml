@@ -1,6 +1,9 @@
 name: Admin UI Flaky Matrix
 
 on:
+  push:
+    branches:
+      - tmp-flaky-matrix-*
   pull_request:
     branches:
       - main
@@ -16,7 +19,7 @@ permissions:
 jobs:
   build-keycloak:
     name: Build Keycloak (flaky matrix)
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 50995
+    if: github.event_name != 'pull_request' || github.event.pull_request.number == 50995
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -38,7 +41,7 @@ jobs:
     name: Admin UI Flaky Matrix (${{ matrix.attempt }})
     needs:
       - build-keycloak
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 50995
+    if: github.event_name != 'pull_request' || github.event.pull_request.number == 50995
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
