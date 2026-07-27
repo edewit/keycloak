@@ -100,7 +100,7 @@ jobs:
         working-directory: js
 
       - name: Run flaky test subset (chromium)
-        run: pnpm --fail-if-no-match --filter ${{ env.WORKSPACE }} test:integration -- --project=chromium --grep "${{ env.FLAKY_TEST_GREP }}"
+        run: pnpm --fail-if-no-match --filter ${{ env.WORKSPACE }} exec playwright test --project=chromium --grep "${{ env.FLAKY_TEST_GREP }}"
         working-directory: js
 
       - name: Upload Playwright report
