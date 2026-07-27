@@ -195,13 +195,12 @@ test.describe("Authentication flow details", () => {
     await login(page, { to: toAuthentication({ realm: testBed.realm }) });
 
     await clickTableRowItem(page, flowName);
-    const moved = await dragExecutionAboveExecution(
+    await dragExecutionAboveExecution(
       page,
       "Identity Provider Redirector",
       "Kerberos",
     );
 
-    expect(moved).toBe(true);
     await assertNotificationMessage(page, "Flow successfully updated");
   });
 

@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 
 export async function goToUserProfileTab(page: Page) {
   await page.getByTestId("rs-user-profile-tab").click();
@@ -54,12 +54,17 @@ export async function switchOffIfOn(page: Page, selector: string) {
 
 export async function clickCreateUser(page: Page) {
   const emptyAction = page.getByTestId("no-users-found-empty-action");
+  const addUser = page.getByTestId("add-user");
+  await expect(emptyAction.or(addUser).first()).toBeVisible({
+    timeout: 15_000,
+  });
+
   if ((await emptyAction.count()) > 0 && (await emptyAction.isVisible())) {
     await emptyAction.click();
     return;
   }
 
-  await page.getByTestId("add-user").click();
+  await addUser.click();
 }
 
 export async function fillEmailAndOptionalUsername(

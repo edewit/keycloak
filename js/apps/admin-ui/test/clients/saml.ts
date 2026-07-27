@@ -96,7 +96,8 @@ export async function clickEncryptionAssertions(page: Page) {
 }
 
 export async function clickOffEncryptionAssertions(page: Page) {
-  await switchOff(page, "#encryptAssertions");
+  // Toggling this switch can require confirmation in a modal before state flips.
+  await clickSwitch(page, "#encryptAssertions");
 }
 
 export async function clickGenerate(page: Page) {

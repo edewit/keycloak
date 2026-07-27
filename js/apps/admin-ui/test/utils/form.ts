@@ -135,22 +135,7 @@ async function setSwitchState(switchElement: Locator, checked: boolean) {
       return;
     }
 
-    try {
-      if (checked) {
-        await switchElement.check({ force: true, timeout: 3_000 });
-      } else {
-        await switchElement.uncheck({ force: true, timeout: 3_000 });
-      }
-    } catch (error) {
-      if (isPageClosedError(error)) {
-        throw error;
-      }
-
-      // check()/uncheck() can throw after dispatching the change on rerender.
-      if ((await switchElement.isChecked()) !== checked) {
-        await clickSwitchElement(switchElement);
-      }
-    }
+    await clickSwitchElement(switchElement);
 
     try {
       await expect

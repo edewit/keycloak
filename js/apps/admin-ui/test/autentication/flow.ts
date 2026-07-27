@@ -190,13 +190,36 @@ export async function dragExecutionAboveExecution(
     }
   };
 
+  let moved = false;
+
+  // Legacy pointer drag path works more reliably with some CI/browser combos.
+  const sourceText = sourceRow.getByText(sourceExecution).first();
+  const targetText = targetRow.getByText(targetExecution).first();
+  const sourceTextBox = await sourceText.boundingBox();
+  const targetTextBox = await targetText.boundingBox();
+  if (sourceTextBox && targetTextBox) {
+    await page.mouse.move(
+      sourceTextBox.x + sourceTextBox.width / 2,
+      sourceTextBox.y + sourceTextBox.height / 2,
+    );
+    await page.mouse.down();
+    await page.mouse.move(
+      targetTextBox.x + targetTextBox.width / 2,
+      targetTextBox.y + targetTextBox.height / 2,
+      { steps: 20 },
+    );
+    await page.mouse.up();
+    moved = await waitForMove();
+  }
+
   try {
-    await sourceHandle.dragTo(targetHandle, { timeout: 3_000 });
+    if (!moved) {
+      await sourceHandle.dragTo(targetHandle, { timeout: 3_000 });
+      moved = await waitForMove();
+    }
   } catch {
     // Fall back to pointer/keyboard paths when dnd-kit does not trigger drag events in CI.
   }
-
-  let moved = await waitForMove();
 
   if (!moved) {
     const sourceBox =
@@ -212,11 +235,20 @@ export async function dragExecutionAboveExecution(
       await page.mouse.down();
       await page.mouse.move(
         targetBox.x + targetBox.width / 2,
-        targetBox.y + targetBox.height / 2,
+        targetBox.y + Math.min(8, Math.max(2, targetBox.height / 4)),
         { steps: 20 },
       );
       await page.mouse.up();
       moved = await waitForMove();
+    }
+  }
+
+  if (!moved) {
+    try {
+      await sourceRow.dragTo(targetRow, { timeout: 3_000 });
+      moved = await waitForMove();
+    } catch {
+      // Keep trying keyboard fallback below.
     }
   }
 
